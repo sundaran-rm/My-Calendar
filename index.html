@@ -27,7 +27,8 @@
 body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); height:100vh; display:flex; flex-direction:column; overflow:hidden; transition:background 0.2s,color 0.2s; }
 
 /* ── NAV ── */
-nav { display:flex; align-items:center; gap:8px; padding:8px 14px; border-bottom:1px solid var(--border); background:var(--surface); flex-shrink:0; flex-wrap:wrap; min-height:52px; }
+nav { display:flex; align-items:center; gap:8px; padding:8px 14px; border-bottom:1px solid var(--border); background:var(--surface); flex-shrink:0; flex-wrap:nowrap; overflow-x:auto; min-height:52px; scrollbar-width:none; position:relative; z-index:50; }
+nav::-webkit-scrollbar { display:none; }
 .logo { font-family:'DM Serif Display',serif; font-size:1.2rem; color:var(--text); letter-spacing:-0.02em; margin-right:2px; white-space:nowrap; }
 .logo span { color:var(--accent2); font-style:italic; }
 .nav-btn { background:var(--surface2); border:1px solid var(--border); color:var(--text); padding:5px 10px; border-radius:8px; cursor:pointer; font-family:inherit; font-size:0.8rem; font-weight:500; transition:all 0.15s; display:flex; align-items:center; gap:4px; white-space:nowrap; }
@@ -41,8 +42,8 @@ nav { display:flex; align-items:center; gap:8px; padding:8px 14px; border-bottom
 .arrow-btn:hover { border-color:var(--accent); color:var(--accent2); background:var(--accent-soft); }
 .today-btn { background:none; border:1px solid var(--border); color:var(--text2); padding:4px 10px; border-radius:8px; cursor:pointer; font-family:inherit; font-size:0.78rem; font-weight:500; transition:all 0.15s; }
 .today-btn:hover { border-color:var(--accent); color:var(--accent2); }
-.add-btn { background:var(--accent); border:none; color:#fff; padding:6px 14px; border-radius:8px; cursor:pointer; font-family:inherit; font-size:0.8rem; font-weight:600; transition:all 0.15s; display:flex; align-items:center; gap:4px; }
-.add-btn:hover { background:var(--accent2); transform:translateY(-1px); box-shadow:0 4px 14px #7c6af740; }
+.add-btn { background:var(--accent-soft); border:1px solid var(--accent); color:var(--accent2); padding:5px 11px; border-radius:8px; cursor:pointer; font-family:inherit; font-size:0.8rem; font-weight:600; transition:all 0.15s; display:flex; align-items:center; gap:4px; white-space:nowrap; }
+.add-btn:hover { background:var(--accent); color:#fff; }
 .icon-btn { background:none; border:1px solid var(--border); color:var(--text2); width:30px; height:30px; border-radius:8px; cursor:pointer; font-size:0.9rem; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
 .icon-btn:hover { border-color:var(--accent); color:var(--accent2); background:var(--accent-soft); }
 
@@ -160,14 +161,14 @@ nav { display:flex; align-items:center; gap:8px; padding:8px 14px; border-bottom
 
 /* ── WEEK ── */
 .week-view { flex:1; display:flex; flex-direction:column; overflow:hidden; }
-.week-header { display:grid; grid-template-columns:52px repeat(7,1fr); border-bottom:1px solid var(--border); background:var(--surface); flex-shrink:0; }
+.week-header { display:grid; grid-template-columns:22px 52px repeat(7,1fr); border-bottom:1px solid var(--border); background:var(--surface); flex-shrink:0; }
 .week-day-header { text-align:center; padding:8px 4px; border-right:1px solid var(--border); }
 .week-day-header:last-child { border-right:none; }
 .wdh-name { font-size:0.63rem; font-weight:600; letter-spacing:0.08em; color:var(--text3); text-transform:uppercase; }
 .wdh-num { font-size:1.2rem; font-weight:700; color:var(--text); margin-top:1px; display:flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:50%; margin:1px auto 0; }
 .wdh-num.today { background:var(--accent); color:#fff; }
 .allday-row { display:grid; border-bottom:1px solid var(--border); background:var(--surface); flex-shrink:0; min-height:26px; }
-.allday-row.week-allday { grid-template-columns:52px repeat(7,1fr); }
+.allday-row.week-allday { grid-template-columns:22px 52px repeat(7,1fr); }
 .allday-row.day-allday { grid-template-columns:52px 1fr; }
 .allday-gutter { border-right:1px solid var(--border); display:flex; align-items:center; justify-content:flex-end; padding:3px 6px 0 0; font-size:0.56rem; color:var(--text3); font-weight:600; letter-spacing:0.04em; text-transform:uppercase; }
 .allday-cell { border-right:1px solid var(--border); padding:2px 3px; display:flex; flex-direction:column; gap:1px; }
@@ -176,7 +177,7 @@ nav { display:flex; align-items:center; gap:8px; padding:8px 14px; border-bottom
 .allday-pill:hover { opacity:0.8; }
 .allday-pill-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
 .allday-pill-text { overflow:hidden; text-overflow:ellipsis; flex:1; }
-.week-body { flex:1; display:grid; grid-template-columns:52px repeat(7,1fr); overflow-y:auto; position:relative; }
+.week-body { flex:1; display:grid; grid-template-columns:22px 52px repeat(7,1fr); overflow-y:auto; position:relative; }
 .time-col { border-right:1px solid var(--border); flex-shrink:0; }
 .time-label { height:60px; display:flex; align-items:flex-start; justify-content:flex-end; padding:3px 7px 0 0; font-size:0.6rem; color:var(--text3); border-bottom:1px solid var(--border); }
 .week-day-col { border-right:1px solid var(--border); position:relative; min-height:1440px; }
@@ -308,7 +309,7 @@ select.form-input option { background:var(--surface2); }
 
 /* ── IMPORT/EXPORT ── */
 .io-wrapper { position:relative; }
-.io-dropdown { position:absolute; top:calc(100% + 6px); right:0; background:var(--surface); border:1px solid var(--border); border-radius:10px; min-width:195px; box-shadow:0 12px 36px var(--shadow); z-index:200; overflow:hidden; display:none; }
+.io-dropdown { position:fixed; background:var(--surface); border:1px solid var(--border); border-radius:10px; min-width:195px; box-shadow:0 12px 36px var(--shadow); z-index:9000; overflow:hidden; display:none; }
 .io-wrapper.open .io-dropdown { display:block; }
 .io-section-label { font-size:0.63rem; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:0.1em; padding:9px 13px 3px; }
 .io-item { display:flex; align-items:center; gap:8px; padding:8px 13px; cursor:pointer; font-size:0.81rem; color:var(--text2); transition:all 0.12s; border:none; background:none; font-family:inherit; width:100%; text-align:left; }
@@ -331,9 +332,9 @@ select.form-input option { background:var(--surface2); }
 
 /* ── JUMP TO DATE ── */
 .jump-wrapper { position:relative; }
-.jump-btn { background:none; border:1px solid var(--border); color:var(--text2); padding:4px 10px; border-radius:8px; cursor:pointer; font-family:inherit; font-size:0.78rem; font-weight:500; transition:all 0.15s; display:flex; align-items:center; gap:4px; }
-.jump-btn:hover { border-color:var(--accent); color:var(--accent2); }
-.jump-dropdown { position:absolute; top:calc(100% + 6px); left:50%; transform:translateX(-50%); background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px; box-shadow:0 12px 36px var(--shadow); z-index:200; display:none; min-width:220px; }
+.jump-btn { background:var(--accent-soft); border:1px solid var(--accent); color:var(--accent2); padding:5px 11px; border-radius:8px; cursor:pointer; font-family:inherit; font-size:0.8rem; font-weight:600; transition:all 0.15s; display:flex; align-items:center; gap:4px; white-space:nowrap; }
+.jump-btn:hover { background:var(--accent); color:#fff; }
+.jump-dropdown { position:fixed; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px; box-shadow:0 12px 36px var(--shadow); z-index:9000; display:none; min-width:220px; }
 .jump-wrapper.open .jump-dropdown { display:block; }
 .jump-dropdown label { font-size:0.68rem; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:0.06em; display:block; margin-bottom:6px; }
 .jump-date-input { width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text); padding:8px 10px; border-radius:8px; font-family:inherit; font-size:0.88rem; outline:none; transition:border-color 0.15s; margin-bottom:8px; }
@@ -406,9 +407,6 @@ select.form-input option { background:var(--surface2); }
 }
 @media(max-width:480px){
   .view-tabs .nav-btn:not(.active) { padding:5px 7px; font-size:0.72rem; }
-  .add-btn { padding:5px 10px; font-size:0.76rem; }
-  .nav-center { order:-1; width:100%; justify-content:center; }
-  nav { justify-content:space-between; }
 }
 
 /* ── DRAG GHOST ── */
@@ -430,6 +428,39 @@ select.form-input option { background:var(--surface2); }
 .toggle-sw input:checked + .toggle-track { background:var(--accent); }
 .toggle-thumb { position:absolute; width:14px; height:14px; background:#fff; border-radius:50%; top:3px; left:3px; transition:transform 0.2s; }
 .toggle-sw input:checked ~ .toggle-thumb { transform:translateX(16px); }
+
+  /* ── WEEKEND TINT ── */
+  .day-cell.weekend { background: color-mix(in srgb, var(--accent) 3%, var(--bg)); }
+  .day-cell.weekend:hover { background: color-mix(in srgb, var(--accent) 7%, var(--bg)); }
+  [data-theme="light"] .day-cell.weekend { background: color-mix(in srgb, var(--accent) 4%, #fff); }
+  .day-header.weekend { color: var(--accent2); }
+  .week-day-header.weekend .wdh-name { color: var(--accent2); }
+  .week-day-header.weekend .wdh-num:not(.today) { color: var(--accent2); }
+  .week-day-col.weekend { background: color-mix(in srgb, var(--accent) 2%, transparent); }
+
+  /* ── WEEK NUMBERS ── */
+  .month-grid { grid-template-columns: 22px repeat(7,1fr) !important; }
+  .day-headers-inner { display:grid; grid-template-columns: 22px repeat(7,1fr); border-bottom:1px solid var(--border); background:var(--surface); }
+  .week-num-gutter { border-right:1px solid var(--border); }
+  .week-num-cell { font-size:0.55rem; color:var(--text3); display:flex; align-items:flex-start; justify-content:center; padding-top:5px; border-right:1px solid var(--border); border-bottom:1px solid var(--border); cursor:default; user-select:none; font-weight:600; letter-spacing:0.02em; }
+  .week-num-cell:hover { color:var(--text2); }
+  .mini-grid { grid-template-columns: 18px repeat(7,1fr) !important; }
+  .mini-wk-label { font-size:0.5rem; color:var(--text3); text-align:center; padding:2px 0; font-weight:600; }
+  .mini-wk-num { font-size:0.5rem; color:var(--text3); text-align:center; display:flex; align-items:center; justify-content:center; width:18px; height:22px; margin:auto; cursor:default; }
+  .mini-wk-num:hover { color:var(--text2); }
+  /* week header gutter for week-numbers column */
+  .week-header { grid-template-columns: 22px 52px repeat(7,1fr) !important; }
+  .week-body  { grid-template-columns: 22px 52px repeat(7,1fr) !important; }
+  .week-wk-num-hdr { border-right:1px solid var(--border); display:flex; align-items:center; justify-content:center; }
+  .week-wk-num-label { font-size:0.56rem; color:var(--text3); font-weight:600; writing-mode:vertical-rl; transform:rotate(180deg); letter-spacing:0.06em; }
+
+  /* ── TIME BLOCKING ── */
+  .time-block-overlay { position:absolute; left:2px; right:2px; border-radius:5px; background:var(--accent-soft); border:1.5px dashed var(--accent); pointer-events:none; z-index:5; display:flex; align-items:center; justify-content:center; }
+  .time-block-label { font-size:0.68rem; color:var(--accent2); font-weight:600; }
+
+  /* ── EVENT DURATION ── */
+  .we-duration { font-size:0.58rem; color:var(--text3); margin-top:1px; }
+  .pill-duration { font-size:0.55rem; color:var(--text3); flex-shrink:0; margin-left:2px; }
 </style>
 
 <!-- ── NAV ── -->
@@ -446,9 +477,9 @@ select.form-input option { background:var(--surface2); }
     <button class="arrow-btn" onclick="navigate(-1)">&#8249;</button>
     <button class="today-btn" onclick="goToday()">Today</button>
     <button class="arrow-btn" onclick="navigate(1)">&#8250;</button>
-    <div class="month-title" id="main-title" onclick="openJumpToDate()" title="Click to jump to date (G)"></div>
+    <div class="month-title" id="main-title" onclick="openJumpToDate(this)" title="Click to jump to date (G)"></div>
     <div class="jump-wrapper" id="jump-wrapper">
-      <button class="jump-btn" onclick="openJumpToDate()" title="Jump to date (G)">📅 Go to…</button>
+      <button class="jump-btn" onclick="openJumpToDate(this)" title="Jump to date (G)">📅 Go to…</button>
       <div class="jump-dropdown" id="jump-dropdown">
         <label>Jump to Date</label>
         <input type="date" class="jump-date-input" id="jump-date-input" onkeydown="if(event.key==='Enter')confirmJump()" />
@@ -1041,6 +1072,22 @@ function parseDate(s){ if(!s) return null; const[y,m,d]=s.split('-').map(Number)
 function isSameDay(a,b){ return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
 function addDays(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
 function getWeekStart(d){ return new Date(d.getFullYear(),d.getMonth(),d.getDate()-d.getDay()); }
+function getISOWeek(d){
+  const date=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  date.setUTCDate(date.getUTCDate()+4-(date.getUTCDay()||7));
+  const yearStart=new Date(Date.UTC(date.getUTCFullYear(),0,1));
+  return Math.ceil((((date-yearStart)/86400000)+1)/7);
+}
+function fmtDuration(start,end){
+  if(!start||!end) return '';
+  const [sh,sm]=start.split(':').map(Number);
+  const [eh,em]=end.split(':').map(Number);
+  const mins=eh*60+em-sh*60-sm;
+  if(mins<=0) return '';
+  if(mins<60) return mins+'m';
+  const h=Math.floor(mins/60), m=mins%60;
+  return m?h+'h'+m+'m':h+'h';
+}
 // Convert a local date to display date in selected tz
 function toDisplayDate(dateStr,timeStr){
   if(!currentTz||!timeStr) return {date:dateStr,time:timeStr};
@@ -1177,18 +1224,29 @@ function renderCalendar(){
 // ══════════════════════════════════════════
 function renderMonth(area){
   const mv=document.createElement('div'); mv.className='month-view';
-  const dh=document.createElement('div'); dh.className='day-headers';
-  DAYS.forEach(d=>{ const el=document.createElement('div'); el.className='day-header'; el.textContent=d; dh.appendChild(el); });
+  // Header row: week-num gutter + 7 day headers
+  const dh=document.createElement('div'); dh.className='day-headers-inner';
+  const wng=document.createElement('div'); wng.className='week-num-gutter'; dh.appendChild(wng);
+  DAYS.forEach((d,i)=>{
+    const el=document.createElement('div'); el.className='day-header'+(i===0||i===6?' weekend':'');
+    el.textContent=d; dh.appendChild(el);
+  });
   mv.appendChild(dh);
   const grid=document.createElement('div'); grid.className='month-grid';
   const first=new Date(cursor.getFullYear(),cursor.getMonth(),1);
   const sd=first.getDay();
   const dim=new Date(cursor.getFullYear(),cursor.getMonth()+1,0).getDate();
-  // Build 6-week grid
-  for(let i=0;i<42;i++){
-    const date=new Date(cursor.getFullYear(),cursor.getMonth(),1-sd+i);
-    const cell=buildMonthCell(date, date.getMonth()!==cursor.getMonth());
-    grid.appendChild(cell);
+  // Build 6-week grid with week number cells
+  for(let row=0;row<6;row++){
+    const firstOfRow=new Date(cursor.getFullYear(),cursor.getMonth(),1-sd+row*7);
+    const wn=document.createElement('div'); wn.className='week-num-cell';
+    wn.textContent='W'+getISOWeek(firstOfRow); wn.title='Week '+getISOWeek(firstOfRow);
+    grid.appendChild(wn);
+    for(let col=0;col<7;col++){
+      const date=new Date(cursor.getFullYear(),cursor.getMonth(),1-sd+row*7+col);
+      const cell=buildMonthCell(date, date.getMonth()!==cursor.getMonth());
+      grid.appendChild(cell);
+    }
   }
   mv.appendChild(grid);
   area.appendChild(mv);
@@ -1196,7 +1254,8 @@ function renderMonth(area){
 function buildMonthCell(date,otherMonth){
   const dStr=fmtDate(date);
   const cell=document.createElement('div');
-  cell.className='day-cell'+(otherMonth?' other-month':'')+(isSameDay(date,today)?' today':'');
+  const isWknd=date.getDay()===0||date.getDay()===6;
+  cell.className='day-cell'+(otherMonth?' other-month':'')+(isSameDay(date,today)?' today':'')+(isWknd?' weekend':'');
   cell.dataset.date=dStr;
   // Day number
   const dn=document.createElement('div'); dn.className='day-num';
@@ -1252,6 +1311,10 @@ function makePill(ev,date){
     const rb=document.createElement('span'); rb.className='pill-recur'; rb.textContent='↻'; pill.appendChild(rb);
   }
   if(lbl){ const lb=document.createElement('span'); lb.className='pill-label'; lb.textContent=lbl.name; pill.appendChild(lb); }
+  if(!ev.allDay&&!isMultiDay(ev)&&ev.start&&ev.end){
+    const dur=fmtDuration(ev.start,ev.end);
+    if(dur){ const db=document.createElement('span'); db.className='pill-duration'; db.textContent=dur; pill.appendChild(db); }
+  }
   pill.draggable=true;
   pill.onclick=e=>{ e.stopPropagation(); showPopup(ev.id,date,e); };
   pill.addEventListener('dragstart',e=>{ e.stopPropagation(); startDrag(ev.id,fmtDate(date),e); });
@@ -1265,12 +1328,16 @@ function makePill(ev,date){
 function renderWeek(area){
   const ws=getWeekStart(cursor);
   const wv=document.createElement('div'); wv.className='week-view';
-  // Header
+  // Header: wk-num | empty-timecol | 7 day headers
   const hdr=document.createElement('div'); hdr.className='week-header';
-  const gutter=document.createElement('div'); gutter.className=''; hdr.appendChild(gutter);
+  const wkHdrGutter=document.createElement('div'); wkHdrGutter.className='week-wk-num-hdr';
+  const wkLbl=document.createElement('div'); wkLbl.className='week-wk-num-label'; wkLbl.textContent='W'+getISOWeek(ws);
+  wkHdrGutter.appendChild(wkLbl); hdr.appendChild(wkHdrGutter);
+  const timeGutter=document.createElement('div'); hdr.appendChild(timeGutter); // spacer over time col
   for(let i=0;i<7;i++){
     const d=addDays(ws,i);
-    const wdh=document.createElement('div'); wdh.className='week-day-header';
+    const isWknd=d.getDay()===0||d.getDay()===6;
+    const wdh=document.createElement('div'); wdh.className='week-day-header'+(isWknd?' weekend':'');
     const name=document.createElement('div'); name.className='wdh-name'; name.textContent=DAYS[d.getDay()];
     const num=document.createElement('div'); num.className='wdh-num'+(isSameDay(d,today)?' today':''); num.textContent=d.getDate();
     wdh.appendChild(name); wdh.appendChild(num); hdr.appendChild(wdh);
@@ -1279,8 +1346,10 @@ function renderWeek(area){
   // All-day row
   const adr=buildAlldayRow('week',ws,7);
   wv.appendChild(adr);
-  // Time grid
+  // Time grid: wk-num | time-col | 7 day cols
   const body=document.createElement('div'); body.className='week-body';
+  // Week-number side column
+  const wkNumCol=document.createElement('div'); wkNumCol.style.cssText='border-right:1px solid var(--border);'; body.appendChild(wkNumCol);
   // Time labels col
   const tcol=document.createElement('div'); tcol.className='time-col';
   for(let h=0;h<24;h++){
@@ -1291,7 +1360,7 @@ function renderWeek(area){
   body.appendChild(tcol);
   for(let i=0;i<7;i++){
     const d=addDays(ws,i);
-    const col=buildWeekDayCol(d);
+    const col=buildWeekDayCol(d,body);
     body.appendChild(col);
   }
   wv.appendChild(body);
@@ -1302,6 +1371,10 @@ function renderWeek(area){
 function buildAlldayRow(type,startDate,count){
   const adr=document.createElement('div');
   adr.className='allday-row '+(type==='week'?'week-allday':'day-allday');
+  // Week mode gets an extra wk-num gutter cell first
+  if(type==='week'){
+    const wkSpacer=document.createElement('div'); wkSpacer.style.cssText='border-right:1px solid var(--border);'; adr.appendChild(wkSpacer);
+  }
   const ag=document.createElement('div'); ag.className='allday-gutter'; ag.textContent='All-day'; adr.appendChild(ag);
   for(let i=0;i<count;i++){
     const d=addDays(startDate,i);
@@ -1325,14 +1398,13 @@ function makeAlldayPill(ev,date){
   pill.onclick=e=>{e.stopPropagation();showPopup(ev.id,date,e);};
   return pill;
 }
-function buildWeekDayCol(date){
+function buildWeekDayCol(date,bodyEl){
   const dStr=fmtDate(date);
-  const col=document.createElement('div'); col.className='week-day-col';
+  const isWknd=date.getDay()===0||date.getDay()===6;
+  const col=document.createElement('div'); col.className='week-day-col'+(isWknd?' weekend':'');
   // Hour lines
   for(let h=0;h<24;h++){
     const hl=document.createElement('div'); hl.className='hour-line'; hl.style.top=(h*60)+'px'; col.appendChild(hl);
-    // Click to create event at this hour
-    hl.onclick=()=>{ const t=h.toString().padStart(2,'0')+':00'; openModal(dStr,t); };
   }
   // Now line
   if(isSameDay(date,today)){
@@ -1350,6 +1422,55 @@ function buildWeekDayCol(date){
   col.addEventListener('dragover',e=>{ e.preventDefault(); col.classList.add('drag-over'); });
   col.addEventListener('dragleave',()=>col.classList.remove('drag-over'));
   col.addEventListener('drop',e=>{ e.preventDefault(); col.classList.remove('drag-over'); handleDrop(dStr); });
+  // ── Time-blocking: drag-to-create ──
+  let blockOverlay=null, blockStartY=0, blockStartMin=0, blockDragging=false;
+  function colY(e){ const r=col.getBoundingClientRect(); return e.clientY-r.top; }
+  function snapMin(px){ return Math.round(Math.max(0,Math.min(1439,px))/15)*15; }
+  function fmtMin(m){ return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'); }
+  col.addEventListener('mousedown',e=>{
+    if(e.button!==0) return;
+    // Don't intercept clicks on existing events or drag ops
+    if(e.target.closest('.week-event,.allday-pill')) return;
+    if(isDragging) return;
+    blockDragging=true;
+    blockStartY=colY(e); blockStartMin=snapMin(blockStartY);
+    blockOverlay=document.createElement('div'); blockOverlay.className='time-block-overlay';
+    const lbl=document.createElement('div'); lbl.className='time-block-label'; blockOverlay.appendChild(lbl);
+    blockOverlay.style.top=blockStartMin+'px'; blockOverlay.style.height='0px';
+    col.appendChild(blockOverlay);
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove',onBlockMove);
+  document.addEventListener('mouseup',onBlockUp);
+  function onBlockMove(e){
+    if(!blockDragging||!blockOverlay) return;
+    const curMin=snapMin(colY(e));
+    const top=Math.min(blockStartMin,curMin);
+    const bot=Math.max(blockStartMin,curMin)+15;
+    blockOverlay.style.top=top+'px'; blockOverlay.style.height=(bot-top)+'px';
+    const lbl=blockOverlay.querySelector('.time-block-label');
+    lbl.textContent=fmtMin(top)+' – '+fmtMin(Math.min(bot,1440));
+  }
+  function onBlockUp(e){
+    if(!blockDragging||!blockOverlay){ blockDragging=false; return; }
+    blockDragging=false;
+    const curMin=snapMin(colY(e));
+    const startMin=Math.min(blockStartMin,curMin);
+    const endMin=Math.max(blockStartMin,curMin)+15;
+    if(blockOverlay.parentNode) blockOverlay.parentNode.removeChild(blockOverlay);
+    blockOverlay=null;
+    // Only open modal if dragged at least 15 min (avoids conflicts with plain clicks)
+    if(endMin-startMin>=15){
+      openModal(dStr,fmtMin(startMin),fmtMin(Math.min(endMin,1439)));
+    } else {
+      // Treat as plain click → open at snapped hour
+      const h=Math.floor(startMin/60);
+      openModal(dStr,String(h).padStart(2,'0')+':'+String(startMin%60).padStart(2,'0'));
+    }
+  }
+  // Clean up listeners when col is removed from DOM
+  const obs=new MutationObserver(()=>{ if(!col.isConnected){ document.removeEventListener('mousemove',onBlockMove); document.removeEventListener('mouseup',onBlockUp); obs.disconnect(); } });
+  obs.observe(document.body,{childList:true,subtree:true});
   return col;
 }
 function buildWeekEvent(ev,date){
@@ -1365,6 +1486,10 @@ function buildWeekEvent(ev,date){
   const title=document.createElement('div'); title.className='we-title'; title.textContent=ev.title;
   const time=document.createElement('div'); time.className='we-time'; time.textContent=`${formatTzTime(ev.start)||ev.start}–${formatTzTime(ev.end)||ev.end}`;
   el.appendChild(title); el.appendChild(time);
+  if(height>=50){
+    const dur=fmtDuration(ev.start,ev.end);
+    if(dur){ const dd=document.createElement('div'); dd.className='we-duration'; dd.textContent=dur; el.appendChild(dd); }
+  }
   el.draggable=true;
   el.onclick=e=>{e.stopPropagation();showPopup(ev.id,date,e);};
   el.addEventListener('dragstart',e=>{e.stopPropagation();startDrag(ev.id,fmtDate(date),e);});
@@ -1395,7 +1520,7 @@ function renderDay(area){
     tcol.appendChild(tl);
   }
   body.appendChild(tcol);
-  const dcol=buildWeekDayCol(cursor); dcol.style.minHeight='1440px';
+  const dcol=buildWeekDayCol(cursor,body); dcol.style.minHeight='1440px';
   body.appendChild(dcol);
   dv.appendChild(body);
   area.appendChild(dv);
@@ -1529,18 +1654,35 @@ function renderMini(){
   if(!miniCalVisible) return;
   document.getElementById('mini-title').textContent=MONTHS[miniCursor.getMonth()].slice(0,3)+' '+miniCursor.getFullYear();
   const grid=document.getElementById('mini-grid'); grid.innerHTML='';
+  // Week-number header spacer + day labels
+  const wkHdrSpacer=document.createElement('div'); wkHdrSpacer.className='mini-wk-label'; wkHdrSpacer.textContent='W'; grid.appendChild(wkHdrSpacer);
   DAYS.forEach(d=>{ const el=document.createElement('div'); el.className='mini-day-label'; el.textContent=d[0]; grid.appendChild(el); });
   const first=new Date(miniCursor.getFullYear(),miniCursor.getMonth(),1);
   const sd=first.getDay();
   const dim=new Date(miniCursor.getFullYear(),miniCursor.getMonth()+1,0).getDate();
-  for(let i=0;i<sd;i++) addMiniDay(grid,new Date(miniCursor.getFullYear(),miniCursor.getMonth(),1-sd+i),true);
-  for(let d=1;d<=dim;d++) addMiniDay(grid,new Date(miniCursor.getFullYear(),miniCursor.getMonth(),d),false);
-  for(let i=1;i<=42-sd-dim;i++) addMiniDay(grid,new Date(miniCursor.getFullYear(),miniCursor.getMonth()+1,i),true);
+  // Build rows with week numbers
+  const allDays=[];
+  for(let i=0;i<sd;i++) allDays.push({date:new Date(miniCursor.getFullYear(),miniCursor.getMonth(),1-sd+i),other:true});
+  for(let d=1;d<=dim;d++) allDays.push({date:new Date(miniCursor.getFullYear(),miniCursor.getMonth(),d),other:false});
+  for(let i=1;i<=42-sd-dim;i++) allDays.push({date:new Date(miniCursor.getFullYear(),miniCursor.getMonth()+1,i),other:true});
+  for(let row=0;row<6;row++){
+    const firstDay=allDays[row*7]?.date;
+    const wn=document.createElement('div'); wn.className='mini-wk-num';
+    if(firstDay){ wn.textContent=getISOWeek(firstDay); wn.title='Week '+getISOWeek(firstDay); }
+    grid.appendChild(wn);
+    for(let col=0;col<7;col++){
+      const item=allDays[row*7+col];
+      if(item) addMiniDay(grid,item.date,item.other);
+      else { const empty=document.createElement('div'); grid.appendChild(empty); }
+    }
+  }
 }
 function addMiniDay(grid,date,other){
   const el=document.createElement('div');
   const evCount=eventsForDate(date).length;
-  el.className='mini-day'+(other?' other-month':'')+(isSameDay(date,today)?' today':'')+(evCount>0?' has-events':'');
+  const isWknd=date.getDay()===0||date.getDay()===6;
+  el.className='mini-day'+(other?' other-month':'')+(isSameDay(date,today)?' today':'')+(evCount>0?' has-events':'')+(isWknd&&!other?' weekend':'');
+  if(isWknd&&!other&&!isSameDay(date,today)) el.style.color='var(--accent2)';
   el.textContent=date.getDate();
   el.onclick=()=>{
     if(view==='month') cursor=new Date(date.getFullYear(),date.getMonth(),1);
@@ -1694,7 +1836,7 @@ function getHabitStreak(h){
 // ══════════════════════════════════════════
 // EVENT MODAL
 // ══════════════════════════════════════════
-function openModal(dateStr,timeStr){
+function openModal(dateStr,timeStr,endTimeStr){
   editingId=null;
   document.getElementById('modal-title').textContent='New Event';
   document.getElementById('ev-title').value='';
@@ -1703,7 +1845,8 @@ function openModal(dateStr,timeStr){
   document.getElementById('ev-desc').value='';
   document.getElementById('ev-allday').value='yes';
   document.getElementById('ev-start').value=timeStr||'09:00';
-  document.getElementById('ev-end').value=timeStr?`${String(parseInt(timeStr)+1).padStart(2,'0')}:00`:'10:00';
+  document.getElementById('ev-end').value=endTimeStr||(timeStr?`${String(parseInt(timeStr)+1).padStart(2,'0')}:00`:'10:00');
+  if(endTimeStr) document.getElementById('ev-allday').value='no';
   document.getElementById('ev-recur-type').value='none';
   document.getElementById('ev-recur-interval').value=1;
   document.getElementById('ev-recur-end-type').value='never';
@@ -2009,6 +2152,37 @@ document.getElementById('calendar-area').addEventListener('touchend',e=>{
   if(dt<400&&Math.abs(dx)>60&&dy<60) navigate(dx<0?1:-1);
 },{passive:true});
 
+// ── Scroll navigation ──
+// Debounce to fire once per deliberate scroll gesture
+let wheelCooldown=false;
+function wheelCooldownFn(){ wheelCooldown=false; }
+document.getElementById('calendar-area').addEventListener('wheel', e => {
+  const absX = Math.abs(e.deltaX);
+  const absY = Math.abs(e.deltaY);
+  const inTimeGrid = e.target.closest('.week-body,.day-body');
+
+  if(view === 'month') {
+    // Vertical scroll → previous/next month
+    if(absY < 20) return;
+    if(wheelCooldown) return;
+    e.preventDefault();
+    navigate(e.deltaY > 0 ? 1 : -1);
+    wheelCooldown = true; setTimeout(wheelCooldownFn, 600);
+  } else {
+    // week / day / year: horizontal scroll (trackpad two-finger swipe)
+    // Shift+vertical scroll for mice too
+    const delta = absX > absY ? e.deltaX : (e.shiftKey ? e.deltaY : 0);
+    if(Math.abs(delta) < 20) {
+      // Pure vertical scroll inside time grid → pass through for time scrolling
+      return;
+    }
+    if(wheelCooldown) return;
+    e.preventDefault();
+    navigate(delta > 0 ? 1 : -1);
+    wheelCooldown = true; setTimeout(wheelCooldownFn, 500);
+  }
+}, { passive: false });
+
 // ══════════════════════════════════════════
 // CALENDARS CRUD
 // ══════════════════════════════════════════
@@ -2191,7 +2365,7 @@ function saveHabit(){
   else habits.push({id:uuid(),name,freq,color:selectedHabitColorLocal,completions:[]});
   saveHabits(); closeHabitModal(); render();
 }
-function deleteHabit(id){ habits=habits.filter(h=>h.id!==id); saveHabits(); closeHabitModal(); render(); }
+function deleteHabit(id){ habits=habits.filter(h=>h.id!==id); saveHabits(); fbDeleteHabit(id); closeHabitModal(); render(); }
 
 // ══════════════════════════════════════════
 // REMINDERS / NOTIFICATIONS
@@ -2283,9 +2457,22 @@ function closeSettings(){ document.getElementById('settings-overlay').classList.
 // ══════════════════════════════════════════
 // JUMP TO DATE
 // ══════════════════════════════════════════
-function openJumpToDate(){
-  const jw=document.getElementById('jump-wrapper'); jw.classList.toggle('open');
-  if(jw.classList.contains('open')){
+function openJumpToDate(btnEl){
+  const jw=document.getElementById('jump-wrapper');
+  const dd=document.getElementById('jump-dropdown');
+  const isOpen=jw.classList.contains('open');
+  jw.classList.toggle('open',!isOpen);
+  if(!isOpen){
+    // Find the button — either passed directly or the month-title click
+    const btn=btnEl||document.querySelector('.jump-btn');
+    if(btn){
+      const r=btn.getBoundingClientRect();
+      dd.style.top=(r.bottom+6)+'px';
+      // Centre under button, but clamp to viewport
+      let left=r.left+r.width/2-110;
+      left=Math.max(8,Math.min(left,window.innerWidth-236));
+      dd.style.left=left+'px';
+    }
     const d=view==='month'||view==='year'?new Date(cursor.getFullYear(),cursor.getMonth(),today.getDate()):cursor;
     document.getElementById('jump-date-input').value=fmtDate(d);
     setTimeout(()=>document.getElementById('jump-date-input').focus(),60);
@@ -2302,7 +2489,19 @@ function confirmJump(){
 // ══════════════════════════════════════════
 // IMPORT / EXPORT
 // ══════════════════════════════════════════
-function toggleIODropdown(e){ e.stopPropagation(); document.getElementById('io-wrapper').classList.toggle('open'); }
+function toggleIODropdown(e){
+  e.stopPropagation();
+  const wrapper=document.getElementById('io-wrapper');
+  const dd=document.getElementById('io-dropdown');
+  const isOpen=wrapper.classList.contains('open');
+  wrapper.classList.toggle('open',!isOpen);
+  if(!isOpen){
+    const btn=e.currentTarget;
+    const r=btn.getBoundingClientRect();
+    dd.style.top=(r.bottom+6)+'px';
+    dd.style.right=(window.innerWidth-r.right)+'px';
+  }
+}
 function downloadFile(content,filename,mime){
   const blob=new Blob([content],{type:mime});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click();
@@ -2532,6 +2731,7 @@ async function fbSaveAllEvents(){ if(!fbDb||!currentRoom) return; setSyncStatus(
 async function fbSaveLabel(lbl){ if(!fbDb||!currentRoom) return; try{const d={...lbl};delete d.id;await fbDb.collection('rooms').doc(currentRoom).collection('labels').doc(lbl.id).set(d);}catch(e){} }
 async function fbDeleteLabel(id){ if(!fbDb||!currentRoom) return; try{await fbDb.collection('rooms').doc(currentRoom).collection('labels').doc(id).delete();}catch(e){} }
 async function fbSaveHabit(h){ if(!fbDb||!currentRoom) return; try{const d={...h};delete d.id;await fbDb.collection('rooms').doc(currentRoom).collection('habits').doc(h.id).set(d);}catch(e){} }
+async function fbDeleteHabit(id){ if(!fbDb||!currentRoom) return; try{await fbDb.collection('rooms').doc(currentRoom).collection('habits').doc(id).delete();}catch(e){} }
 function _fbPushEvent(ev){ if(fbDb&&currentRoom) fbSaveEvent(ev); }
 function _fbDeleteEventDoc(id){ if(fbDb&&currentRoom) fbDeleteEvent(id); }
 function _fbPushLabel(lbl){ if(fbDb&&currentRoom) fbSaveLabel(lbl); }
