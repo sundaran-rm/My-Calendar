@@ -5,31 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CalIO — Offline</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: system-ui, sans-serif;
-    background: #0f0f11; color: #e8e8f0;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    min-height: 100vh; padding: 24px; text-align: center;
-  }
-  .icon { font-size: 4rem; margin-bottom: 20px; }
-  h1 { font-size: 1.4rem; margin-bottom: 10px; color: #a78bfa; }
-  p { font-size: 0.9rem; color: #9090a8; line-height: 1.7; max-width: 300px; }
-  .hint { font-size: 0.78rem; color: #5c5c72; margin-top: 12px; }
-  button {
-    margin-top: 28px; background: #7c6af7; border: none; color: #fff;
-    padding: 12px 28px; border-radius: 10px; font-size: 0.95rem;
-    font-weight: 600; cursor: pointer; transition: opacity 0.15s;
-  }
-  button:hover { opacity: 0.85; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,sans-serif;background:#0f0f11;color:#e8e8f0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center}
+  .icon{font-size:4rem;margin-bottom:20px}
+  h1{font-size:1.4rem;margin-bottom:10px;color:#a78bfa}
+  p{font-size:0.9rem;color:#9090a8;line-height:1.7;max-width:300px}
+  button{margin-top:28px;background:#7c6af7;border:none;color:#fff;padding:12px 28px;border-radius:10px;font-size:0.95rem;font-weight:600;cursor:pointer}
 </style>
 </head>
 <body>
   <div class="icon">📴</div>
   <h1>You're offline</h1>
-  <p>CalIO will load from cache once it's been visited online at least once.</p>
-  <p class="hint">Your local data (events, journal, todos) is safe in localStorage.</p>
+  <p>Open CalIO once with internet and it'll work offline forever after.</p>
   <button onclick="location.reload()">Try Again</button>
 </body>
 </html>

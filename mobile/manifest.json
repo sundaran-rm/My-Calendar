@@ -4,46 +4,28 @@
   "description": "Offline-first calendar with journal, notes, todos, habits, and Firebase sync.",
   "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "theme_color": "#18181c",
   "background_color": "#18181c",
   "scope": "./",
   "lang": "en",
-  "categories": ["productivity", "utilities"],
+  "categories": ["productivity","utilities"],
   "icons": [
-    { "src": "icons/icon-72x72.png",             "sizes": "72x72",   "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-96x96.png",             "sizes": "96x96",   "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-128x128.png",           "sizes": "128x128", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-144x144.png",           "sizes": "144x144", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-152x152.png",           "sizes": "152x152", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-192x192.png",           "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-192x192-maskable.png",  "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "icons/icon-384x384.png",           "sizes": "384x384", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512x512.png",           "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512x512-maskable.png",  "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {"src":"icons/icon-72x72.png","sizes":"72x72","type":"image/png","purpose":"any"},
+    {"src":"icons/icon-96x96.png","sizes":"96x96","type":"image/png","purpose":"any"},
+    {"src":"icons/icon-128x128.png","sizes":"128x128","type":"image/png","purpose":"any"},
+    {"src":"icons/icon-144x144.png","sizes":"144x144","type":"image/png","purpose":"any"},
+    {"src":"icons/icon-152x152.png","sizes":"152x152","type":"image/png","purpose":"any"},
+    {"src":"icons/icon-192x192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"icons/icon-192x192-maskable.png","sizes":"192x192","type":"image/png","purpose":"maskable"},
+    {"src":"icons/icon-384x384.png","sizes":"384x384","type":"image/png","purpose":"any"},
+    {"src":"icons/icon-512x512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"icons/icon-512x512-maskable.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
   ],
   "shortcuts": [
-    {
-      "name": "New Event",
-      "short_name": "New Event",
-      "description": "Create a new calendar event",
-      "url": "./index.html?action=new",
-      "icons": [{ "src": "icons/icon-96x96.png", "sizes": "96x96" }]
-    },
-    {
-      "name": "Today",
-      "short_name": "Today",
-      "description": "Jump to today",
-      "url": "./index.html?action=today",
-      "icons": [{ "src": "icons/icon-96x96.png", "sizes": "96x96" }]
-    },
-    {
-      "name": "New Journal Entry",
-      "short_name": "Journal",
-      "description": "Write a new journal entry for today",
-      "url": "./index.html?action=journal",
-      "icons": [{ "src": "icons/icon-96x96.png", "sizes": "96x96" }]
-    }
+    {"name":"New Event","url":"./index.html?action=new","icons":[{"src":"icons/icon-96x96.png","sizes":"96x96"}]},
+    {"name":"Today","url":"./index.html?action=today","icons":[{"src":"icons/icon-96x96.png","sizes":"96x96"}]},
+    {"name":"Journal","url":"./index.html?action=journal","icons":[{"src":"icons/icon-96x96.png","sizes":"96x96"}]}
   ],
   "prefer_related_applications": false
 }
