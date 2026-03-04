@@ -48,11 +48,11 @@ nav::-webkit-scrollbar { display:none; }
 .icon-btn:hover { border-color:var(--accent); color:var(--accent2); background:var(--accent-soft); }
 
 /* ── SEARCH BAR ── */
-.search-wrap { position:relative; }
+/* .search-wrap now defined with search-icon-btn */
 .search-input { background:var(--surface2); border:1px solid var(--border); color:var(--text); padding:5px 10px 5px 30px; border-radius:8px; font-family:inherit; font-size:0.8rem; outline:none; width:160px; transition:all 0.2s; }
 .search-input:focus { border-color:var(--accent); width:220px; }
 .search-icon { position:absolute; left:9px; top:50%; transform:translateY(-50%); color:var(--text3); font-size:0.82rem; pointer-events:none; }
-.search-results { position:absolute; top:calc(100% + 6px); left:0; background:var(--surface); border:1px solid var(--border); border-radius:10px; width:320px; max-height:360px; overflow-y:auto; box-shadow:0 12px 36px var(--shadow); z-index:300; display:none; }
+.search-results { position:fixed; background:var(--surface); border:1px solid var(--border); border-radius:10px; width:320px; max-height:360px; overflow-y:auto; box-shadow:0 12px 36px var(--shadow); z-index:9000; display:none; }
 .search-wrap.has-results .search-results { display:block; }
 .sr-item { padding:10px 14px; cursor:pointer; border-bottom:1px solid var(--border); transition:background 0.1s; }
 .sr-item:last-child { border-bottom:none; }
@@ -143,6 +143,8 @@ nav::-webkit-scrollbar { display:none; }
 .day-cell.other-month { opacity:0.35; }
 .day-cell.today .day-num-inner { background:var(--accent); color:#fff; }
 .day-cell.drag-over { background:var(--accent-soft) !important; outline:2px dashed var(--accent); outline-offset:-2px; }
+.day-cell.selected { background:var(--accent-soft) !important; outline:2px solid var(--accent); outline-offset:-2px; }
+.day-cell.selected .day-num-inner { background:var(--accent2); color:#fff; }
 .day-num { display:flex; align-items:center; margin-bottom:2px; }
 .day-num-inner { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:600; color:var(--text2); flex-shrink:0; }
 .event-pill { display:flex; align-items:center; gap:3px; padding:2px 5px; border-radius:4px; font-size:0.65rem; margin-bottom:2px; cursor:grab; overflow:hidden; white-space:nowrap; color:var(--text); transition:opacity 0.1s,transform 0.1s; min-width:0; border-left:2px solid; user-select:none; }
@@ -461,6 +463,124 @@ select.form-input option { background:var(--surface2); }
   /* ── EVENT DURATION ── */
   .we-duration { font-size:0.58rem; color:var(--text3); margin-top:1px; }
   .pill-duration { font-size:0.55rem; color:var(--text3); flex-shrink:0; margin-left:2px; }
+
+/* ── WORKSPACE PANEL (Journal / Notes / Todos) ── */
+.ws-panel { width:0; flex-shrink:0; overflow:hidden; border-left:1px solid var(--border); background:var(--surface); display:flex; flex-direction:column; transition:width 0.3s cubic-bezier(.4,0,.2,1); }
+.ws-panel.open { width:380px; }
+.ws-header { display:flex; align-items:center; gap:8px; padding:10px 14px; border-bottom:1px solid var(--border); flex-shrink:0; }
+.ws-header-title { font-family:'DM Serif Display',serif; font-size:1.05rem; flex:1; color:var(--text); }
+.ws-close-btn { background:none; border:none; color:var(--text3); cursor:pointer; font-size:1rem; width:24px; height:24px; display:flex; align-items:center; justify-content:center; border-radius:6px; transition:all 0.12s; }
+.ws-close-btn:hover { color:var(--text); background:var(--surface3); }
+.ws-tabs { display:flex; border-bottom:1px solid var(--border); flex-shrink:0; }
+.ws-tab { flex:1; padding:8px 4px; font-size:0.72rem; font-weight:600; text-align:center; cursor:pointer; border:none; background:none; color:var(--text3); font-family:inherit; letter-spacing:0.04em; text-transform:uppercase; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all 0.15s; }
+.ws-tab.active { color:var(--accent2); border-bottom-color:var(--accent); }
+.ws-body { flex:1; overflow-y:scroll; padding:12px; display:flex; flex-direction:column; gap:10px; min-height:0; overflow-x:hidden; }
+
+/* Journal */
+.journal-day-entry { background:var(--surface2); border:1px solid var(--border); border-radius:10px; flex-shrink:0; min-width:0; overflow:visible; cursor:pointer; transition:border-color 0.15s; }
+.journal-day-entry:hover { border-color:var(--accent); }
+.journal-day-hdr { display:flex; align-items:center; gap:8px; padding:9px 12px; cursor:pointer; border-bottom:1px solid var(--border); }
+.journal-day-hdr:hover { background:var(--surface3); }
+.journal-day-date { font-size:0.78rem; font-weight:600; color:var(--text); flex:1; }
+.journal-day-meta { font-size:0.65rem; color:var(--text3); }
+.journal-mood { font-size:1rem; cursor:pointer; }
+.journal-editor { width:100%; min-height:90px; background:transparent; border:none; resize:none; font-family:'DM Sans',sans-serif; font-size:0.82rem; color:var(--text); padding:10px 12px; outline:none; line-height:1.7; }
+.journal-editor::placeholder { color:var(--text3); }
+.journal-tags { display:flex; gap:5px; flex-wrap:wrap; padding:6px 12px; border-top:1px solid var(--border); }
+.journal-tag { font-size:0.65rem; padding:2px 8px; border-radius:10px; background:var(--accent-soft); color:var(--accent2); cursor:pointer; font-weight:600; }
+.journal-tag-add { font-size:0.65rem; padding:2px 8px; border-radius:10px; border:1px dashed var(--border); color:var(--text3); cursor:pointer; background:none; font-family:inherit; transition:all 0.12s; }
+.journal-tag-add:hover { border-color:var(--accent); color:var(--accent2); }
+.journal-toolbar { display:flex; gap:4px; padding:6px 8px; border-top:1px solid var(--border); flex-wrap:wrap; align-items:center; }
+.j-tool { background:none; border:1px solid var(--border); border-radius:5px; color:var(--text2); font-size:0.7rem; padding:3px 7px; cursor:pointer; font-family:inherit; transition:all 0.12s; }
+.j-tool:hover { border-color:var(--accent); color:var(--accent2); background:var(--accent-soft); }
+.j-tool.active { border-color:var(--accent); color:var(--accent2); background:var(--accent-soft); font-weight:700; }
+.note-toolbar { display:flex; gap:4px; padding:6px 10px; border-top:1px solid var(--border); flex-shrink:0; flex-wrap:wrap; }
+.note-tags-row { display:flex; gap:5px; flex-wrap:wrap; padding:6px 10px; border-top:1px solid var(--border); align-items:center; flex-shrink:0; min-height:32px; }
+.note-tag { font-size:0.65rem; padding:2px 8px; border-radius:10px; background:var(--accent-soft); color:var(--accent2); cursor:pointer; font-weight:600; }
+.journal-new-btn { display:flex; align-items:center; justify-content:center; gap:5px; padding:8px; border:1px dashed var(--border); border-radius:10px; cursor:pointer; color:var(--text3); background:none; font-family:inherit; font-size:0.8rem; width:100%; transition:all 0.12s; }
+.journal-new-btn:hover { border-color:var(--accent); color:var(--accent2); }
+
+/* Notes */
+.note-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; overflow:hidden; cursor:pointer; transition:border-color 0.15s; }
+.note-card:hover { border-color:var(--accent); }
+.note-card.pinned { border-color:var(--accent2); }
+.note-card-header { display:flex; align-items:center; gap:6px; padding:9px 12px 6px; }
+.note-card-title { font-size:0.85rem; font-weight:600; color:var(--text); flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.note-pin { font-size:0.75rem; cursor:pointer; opacity:0.5; transition:opacity 0.15s; }
+.note-pin:hover,.note-card.pinned .note-pin { opacity:1; }
+.note-preview { font-size:0.75rem; color:var(--text2); padding:0 12px 9px; line-height:1.6; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.note-meta { font-size:0.62rem; color:var(--text3); padding:5px 12px; border-top:1px solid var(--border); }
+.note-color-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.note-edit-overlay { position:fixed; inset:0; background:#00000088; z-index:200; display:flex; align-items:center; justify-content:center; }
+.note-editor-modal { background:var(--surface); border:1px solid var(--border); border-radius:14px; width:560px; max-width:95vw; max-height:80vh; display:flex; flex-direction:column; box-shadow:0 20px 60px var(--shadow); overflow:hidden; }
+.note-editor-header { display:flex; align-items:center; gap:8px; padding:12px 16px; border-bottom:1px solid var(--border); flex-shrink:0; }
+.note-title-input { flex:1; background:none; border:none; outline:none; font-family:'DM Serif Display',serif; font-size:1.1rem; color:var(--text); }
+.note-title-input::placeholder { color:var(--text3); }
+.note-body-input { flex:1; background:none; border:none; outline:none; font-family:'DM Sans',sans-serif; font-size:0.84rem; color:var(--text); resize:none; padding:14px 16px; line-height:1.75; min-height:200px; overflow-y:auto; }
+.note-body-input::placeholder { color:var(--text3); }
+.note-editor-footer { display:flex; align-items:center; gap:8px; padding:10px 16px; border-top:1px solid var(--border); flex-shrink:0; }
+.note-color-pick { display:flex; gap:5px; }
+.note-color-btn { width:18px; height:18px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:transform 0.12s; }
+.note-color-btn:hover,.note-color-btn.sel { border-color:var(--text); transform:scale(1.15); }
+.note-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+
+/* Todos */
+.todo-list-section { background:var(--surface2); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.todo-list-hdr { display:flex; align-items:center; gap:8px; padding:9px 12px; border-bottom:1px solid var(--border); cursor:pointer; }
+.todo-list-hdr:hover { background:var(--surface3); }
+.todo-list-color { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.todo-list-name { font-size:0.85rem; font-weight:600; color:var(--text); flex:1; }
+.todo-list-count { font-size:0.65rem; color:var(--text3); }
+.todo-item { display:flex; align-items:flex-start; gap:8px; padding:7px 12px; border-bottom:1px solid var(--border); transition:background 0.1s; }
+.todo-item:last-child { border-bottom:none; }
+.todo-item:hover { background:var(--surface3); }
+.todo-check { width:16px; height:16px; border-radius:50%; border:2px solid; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; transition:all 0.15s; }
+.todo-check.done { background:var(--accent); border-color:var(--accent); }
+.todo-check.done::after { content:✓; font-size:0.6rem; color:#fff; font-weight:700; }
+.todo-text { flex:1; font-size:0.82rem; color:var(--text); line-height:1.4; min-width:0; word-break:break-word; }
+.todo-text.done { text-decoration:line-through; color:var(--text3); }
+.todo-due { font-size:0.62rem; color:var(--text3); white-space:nowrap; }
+.todo-due.overdue { color:var(--red); }
+.todo-item-del { background:none; border:none; color:var(--text3); cursor:pointer; font-size:0.9rem; opacity:0; transition:opacity 0.15s; padding:0 2px; }
+.todo-item:hover .todo-item-del { opacity:1; }
+.todo-add-row { display:flex; align-items:center; gap:6px; padding:7px 10px; }
+.todo-add-input { flex:1; background:none; border:none; outline:none; font-family:'DM Sans',sans-serif; font-size:0.82rem; color:var(--text); }
+.todo-add-input::placeholder { color:var(--text3); }
+.todo-add-btn { background:var(--accent); border:none; color:#fff; width:22px; height:22px; border-radius:50%; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.15s; }
+.todo-add-btn:hover { background:var(--accent2); }
+.todo-new-list-btn { display:flex; align-items:center; justify-content:center; gap:5px; padding:8px; border:1px dashed var(--border); border-radius:10px; cursor:pointer; color:var(--text3); background:none; font-family:inherit; font-size:0.8rem; width:100%; transition:all 0.12s; }
+.todo-new-list-btn:hover { border-color:var(--accent); color:var(--accent2); }
+.todo-progress { height:3px; background:var(--surface3); border-radius:0; }
+.todo-progress-bar { height:3px; background:var(--accent); border-radius:0; transition:width 0.3s; }
+.ws-empty { text-align:center; padding:32px 16px; color:var(--text3); font-size:0.82rem; line-height:1.7; }
+
+/* ── DAY HOVER TOOLTIP ── */
+.day-tooltip { position:fixed; z-index:9999; background:var(--surface); border:1px solid var(--border);
+  border-radius:10px; padding:10px 12px; min-width:180px; max-width:260px;
+  box-shadow:0 8px 30px var(--shadow); pointer-events:none; font-size:0.76rem; }
+.day-tooltip-date { font-weight:700; color:var(--text); margin-bottom:6px; font-size:0.78rem; }
+.day-tooltip-ev { display:flex; align-items:center; gap:6px; padding:2px 0; color:var(--text2); }
+.day-tooltip-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.day-tooltip-todo { color:var(--text2); padding:2px 0; display:flex; align-items:center; gap:5px; }
+.day-tooltip-empty { color:var(--text3); font-style:italic; }
+.day-tooltip-section { font-size:0.63rem; font-weight:700; color:var(--text3); text-transform:uppercase;
+  letter-spacing:0.08em; margin:5px 0 3px; }
+
+/* ── SEARCH ICON MODE ── */
+.search-wrap.icon-mode .search-input { width:0; padding:0; border-color:transparent; opacity:0; pointer-events:none; }
+.search-wrap.icon-mode:focus-within .search-input,
+.search-wrap.expanded .search-input { width:180px; padding:5px 10px 5px 30px; opacity:1; pointer-events:all; border-color:var(--border); }
+.search-wrap.expanded .search-input:focus { width:220px; }
+.search-icon-btn { background:none; border:1px solid var(--border); color:var(--text2); width:30px; height:30px;
+  border-radius:8px; cursor:pointer; font-size:0.85rem; display:flex; align-items:center; justify-content:center;
+  transition:all 0.15s; flex-shrink:0; font-family:inherit; line-height:1; }
+.search-wrap { display:flex; align-items:center; position:relative; }
+.search-icon-btn:hover,.search-wrap.expanded .search-icon-btn { border-color:var(--accent); color:var(--accent2); background:var(--accent-soft); }
+
+.mood-picker { display:flex; gap:6px; padding:6px 12px; border-top:1px solid var(--border); }
+.mood-btn { font-size:0.82rem; cursor:pointer; padding:2px 4px; border-radius:5px; border:2px solid transparent; transition:all 0.12s; }
+.mood-btn:hover,.mood-btn.sel { border-color:var(--accent); background:var(--accent-soft); }
+
 </style>
 
 <!-- ── NAV ── -->
@@ -479,7 +599,7 @@ select.form-input option { background:var(--surface2); }
     <button class="arrow-btn" onclick="navigate(1)">&#8250;</button>
     <div class="month-title" id="main-title" onclick="openJumpToDate(this)" title="Click to jump to date (G)"></div>
     <div class="jump-wrapper" id="jump-wrapper">
-      <button class="jump-btn" onclick="openJumpToDate(this)" title="Jump to date (G)">📅 Go to…</button>
+      <button class="nav-btn" onclick="openJumpToDate(this)" title="Jump to date (G)">📅 Go to…</button>
       <div class="jump-dropdown" id="jump-dropdown">
         <label>Jump to Date</label>
         <input type="date" class="jump-date-input" id="jump-date-input" onkeydown="if(event.key==='Enter')confirmJump()" />
@@ -488,14 +608,22 @@ select.form-input option { background:var(--surface2); }
     </div>
   </div>
 
-  <!-- Search -->
-  <div class="search-wrap" id="search-wrap">
-    <span class="search-icon">🔍</span>
-    <input class="search-input" id="search-input" placeholder="Search events…" autocomplete="off"
-      oninput="handleSearch(this.value)" onfocus="handleSearch(this.value)" />
+  <!-- Search (icon-only, expands on click) -->
+  <div class="search-wrap icon-mode" id="search-wrap">
+    <button class="search-icon-btn" onclick="toggleSearch()" title="Search (/)">🔍</button>
+    <input class="search-input" id="search-input" placeholder="Search everything…" autocomplete="off"
+      oninput="handleSearch(this.value)" onfocus="handleSearch(this.value)"
+      onblur="if(!this.value.trim())collapseSearch()" />
     <div class="search-results" id="search-results"></div>
   </div>
 
+  <!-- New Event -->
+  <button class="nav-btn" onclick="openModal()" title="New event (N)">＋ New Event</button>
+
+  <!-- Journal / Notes / Todos -->
+  <button class="nav-btn" id="ws-panel-btn" onclick="toggleWsPanel()" title="Journal · Notes · Todos (J)">📓</button>
+
+  <!-- Toggle sidebar -->
   <button class="nav-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle sidebar (Esc)">☰</button>
 
   <!-- Import/Export -->
@@ -512,10 +640,7 @@ select.form-input option { background:var(--surface2); }
     </div>
   </div>
 
-  <!-- Settings -->
-  <button class="icon-btn" onclick="openSettings()" title="Settings">⚙</button>
-
-  <!-- Firebase sync -->
+  <!-- Firebase sync / Room -->
   <div id="sync-indicator" class="sync-indicator" onclick="openRoomModal()" title="Firebase sync">
     <div class="sync-dot local" id="sync-dot"></div>
     <span id="sync-label">Local</span>
@@ -524,7 +649,8 @@ select.form-input option { background:var(--surface2); }
     <div class="room-badge" onclick="openRoomModal()">⚡ <span id="room-badge-code"></span></div>
   </div>
 
-  <button class="add-btn" onclick="openModal()">+ New Event</button>
+  <!-- Settings -->
+  <button class="nav-btn" onclick="openSettings()" title="Settings">⚙</button>
 </nav>
 
 <input type="file" id="file-input" style="display:none" />
@@ -604,6 +730,98 @@ select.form-input option { background:var(--surface2); }
 
   </div>
   <div class="calendar-area" id="calendar-area"></div>
+
+  <!-- ── WORKSPACE PANEL ── -->
+  <div class="ws-panel" id="ws-panel">
+    <div class="ws-header">
+      <div class="ws-header-title" id="ws-header-title">Workspace</div>
+      <button class="icon-btn" onclick="wsNewItem()" id="ws-add-btn" title="New" style="width:26px;height:26px;font-size:1rem">+</button>
+      <button class="ws-close-btn" onclick="closeWsPanel()">✕</button>
+    </div>
+    <div class="ws-tabs">
+      <button class="ws-tab active" id="ws-tab-journal" onclick="switchWsTab('journal')">📓 Journal</button>
+      <button class="ws-tab" id="ws-tab-notes" onclick="switchWsTab('notes')">📝 Notes</button>
+      <button class="ws-tab" id="ws-tab-todos" onclick="switchWsTab('todos')">✅ Todos</button>
+    </div>
+    <div class="ws-body" id="ws-body"></div>
+  </div>
+</div>
+
+<!-- ── NOTE EDITOR OVERLAY ── -->
+<div class="note-edit-overlay" id="note-overlay" style="display:none" onclick="handleNoteOverlayClick(event)">
+  <div class="note-editor-modal">
+    <div class="note-editor-header">
+      <input class="note-title-input" id="note-title-inp" placeholder="Untitled note…"/>
+      <div class="note-color-pick" id="note-color-pick"></div>
+      <button class="ws-close-btn" style="margin-left:8px" onclick="closeNoteEditor()">✕</button>
+    </div>
+    <textarea class="note-body-input" id="note-body-inp" placeholder="Start writing…" onkeydown="noteKeydown(event)"></textarea>
+    <div class="note-toolbar">
+      <button class="j-tool" id="note-bold-btn" title="Bold" onclick="noteFmt('bold')"><b>B</b></button>
+      <button class="j-tool" id="note-italic-btn" title="Italic" onclick="noteFmt('italic')"><i>I</i></button>
+      <button class="j-tool" title="Bullet list" onclick="noteFmtLine('• ')">• List</button>
+      <button class="j-tool" title="Numbered list" onclick="noteFmtLine('1. ')">1. List</button>
+
+    </div>
+    <div class="note-tags-row" id="note-tags-row"></div>
+    <div class="note-editor-footer">
+      <span style="font-size:0.72rem;color:var(--text3)" id="note-save-status">Auto-saved</span>
+      <div style="margin-left:auto;display:flex;gap:6px">
+        <button class="btn-delete" onclick="deleteCurrentNote()" style="padding:5px 12px;font-size:0.76rem">Delete</button>
+        <button class="btn-save" onclick="closeNoteEditor()" style="padding:5px 14px;font-size:0.76rem">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── JOURNAL EDITOR OVERLAY ── -->
+<div class="note-edit-overlay" id="journal-overlay" style="display:none" onclick="handleJournalOverlayClick(event)">
+  <div class="note-editor-modal" style="max-height:88vh">
+    <div class="note-editor-header" style="flex-direction:column;align-items:stretch;gap:6px;padding:12px 16px 8px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <input class="note-title-input" id="je-ov-title" placeholder="Entry title (optional)…"/>
+        <span id="je-ov-date" style="font-size:0.72rem;color:var(--text3);white-space:nowrap;flex-shrink:0"></span>
+        <button class="ws-close-btn" style="margin-left:4px" onclick="closeJournalEditor()">✕</button>
+      </div>
+      <div id="je-ov-mood" style="display:flex;gap:4px;padding:2px 0;flex-wrap:wrap"></div>
+    </div>
+    <textarea class="note-body-input" id="je-ov-ta" placeholder="Write freely… what happened today?" onkeydown="jeOvKeydown(event)" oninput="jeOvInput()"></textarea>
+    <div class="note-toolbar">
+      <button class="j-tool" id="je-ov-bold-btn" title="Bold" onclick="jeOvFmt('bold')"><b>B</b></button>
+      <button class="j-tool" id="je-ov-italic-btn" title="Italic" onclick="jeOvFmt('italic')"><i>I</i></button>
+      <button class="j-tool" title="Bullet list" onclick="jeOvFmtLine('• ')">• List</button>
+      <button class="j-tool" title="Numbered list" onclick="jeOvFmtLine('1. ')">1. List</button>
+      <button class="j-tool" onclick="jeOvAddTag()">+ Tag</button>
+    </div>
+    <div class="note-tags-row" id="je-ov-tags"></div>
+    <div class="note-editor-footer">
+      <span id="je-ov-status" style="font-size:0.72rem;color:var(--text3)">Auto-saved</span>
+      <div style="margin-left:auto;display:flex;gap:6px">
+        <button class="btn-delete" onclick="delJEFromOverlay()" style="padding:5px 12px;font-size:0.76rem">Delete</button>
+        <button class="btn-save" onclick="closeJournalEditor()" style="padding:5px 14px;font-size:0.76rem">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TODO LIST MODAL ── -->
+<div class="overlay" id="todolist-overlay" onclick="if(event.target===this)closeTodoListModal()">
+  <div class="modal" style="width:380px">
+    <div class="modal-title" id="todolist-modal-title">New List</div>
+    <div class="form-group">
+      <label class="form-label">List Name</label>
+      <input class="form-input" id="tl-name-inp" placeholder="e.g. Shopping, Work tasks"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Color</label>
+      <div class="color-picker" id="tl-color-pick"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-delete" id="tl-delete-btn" onclick="deleteTodoList()" style="display:none">Delete List</button>
+      <button class="btn-cancel" onclick="closeTodoListModal()">Cancel</button>
+      <button class="btn-save" onclick="saveTodoList()">Save</button>
+    </div>
+  </div>
 </div>
 
 <!-- ── EVENT MODAL ── -->
@@ -1003,6 +1221,15 @@ let labelsVisible=true, calendarsVisible=true, habitsVisible=true;
 let currentTheme='dark', currentTz='', notifPermission='default';
 let importedEventsBuffer=[], importMode='merge', importType='json';
 let reminderTimers={};
+// Workspace state
+let wsTab='journal', wsPanelOpen=false, wsDateCtx=null, selectedDay=null;
+// Persist wsDateCtx across page refreshes
+function saveWsCtx(){try{if(wsDateCtx)sessionStorage.setItem('calioWsCtx',wsDateCtx);else sessionStorage.removeItem('calioWsCtx');}catch{}}
+function loadWsCtx(){try{return sessionStorage.getItem('calioWsCtx')||null;}catch{return null;}}
+let journalEntries=[], notes=[], todoLists=[];
+let editingNoteId=null, editingTodoListId=null, editingJournalId=null;
+let selectedNoteColor=null, selectedTlColor=null;
+let noteAutoSaveTimer=null;
 // Drag state
 let dragEventId=null, dragStartDate=null, dragCurrentDate=null;
 let isDragging=false, dragGhostEl=null;
@@ -1018,6 +1245,9 @@ function loadAll(){
   try{ labels=JSON.parse(localStorage.getItem('calioLabels')||'[]'); }catch{ labels=[]; }
   try{ calendars=JSON.parse(localStorage.getItem('calioCalendars')||'[]'); }catch{ calendars=[]; }
   try{ habits=JSON.parse(localStorage.getItem('calioHabits')||'[]'); }catch{ habits=[]; }
+  try{ journalEntries=JSON.parse(localStorage.getItem('calioJournal')||'[]'); }catch{ journalEntries=[]; }
+  try{ notes=JSON.parse(localStorage.getItem('calioNotes')||'[]'); }catch{ notes=[]; }
+  try{ todoLists=JSON.parse(localStorage.getItem('calioTodoLists')||'[]'); }catch{ todoLists=[]; }
   // Ensure default "Personal" calendar exists
   if(!calendars.length) calendars=[{id:'default',name:'Personal',color:COLORS[0].hex,visible:true}];
   loadPrefs();
@@ -1026,6 +1256,9 @@ function saveEvents(){ localStorage.setItem('calioEvents',JSON.stringify(events)
 function saveLabels(){ localStorage.setItem('calioLabels',JSON.stringify(labels)); }
 function saveCalendars(){ localStorage.setItem('calioCalendars',JSON.stringify(calendars)); }
 function saveHabits(){ localStorage.setItem('calioHabits',JSON.stringify(habits)); }
+function saveJournal(){ localStorage.setItem('calioJournal',JSON.stringify(journalEntries)); }
+function saveNotes(){ localStorage.setItem('calioNotes',JSON.stringify(notes)); }
+function saveTodoLists(){ localStorage.setItem('calioTodoLists',JSON.stringify(todoLists)); }
 function loadPrefs(){
   const p=JSON.parse(localStorage.getItem('calioPrefs')||'{}');
   sidebarVisible=p.sidebarVisible!==false;
@@ -1077,6 +1310,13 @@ function getISOWeek(d){
   date.setUTCDate(date.getUTCDate()+4-(date.getUTCDay()||7));
   const yearStart=new Date(Date.UTC(date.getUTCFullYear(),0,1));
   return Math.ceil((((date-yearStart)/86400000)+1)/7);
+}
+function fmt12hr(t){
+  if(!t) return '';
+  const[h,m]=t.split(':').map(Number);
+  const ampm=h>=12?'pm':'am';
+  const h12=h%12||12;
+  return h12+(m?':'+String(m).padStart(2,'0'):'')+ampm;
 }
 function fmtDuration(start,end){
   if(!start||!end) return '';
@@ -1183,6 +1423,17 @@ function goToday(){
   today=new Date();
   cursor=view==='month'||view==='year'?new Date(today.getFullYear(),today.getMonth(),1):new Date(today);
   render();
+  if(wsPanelOpen){
+    const ds=fmtDate(today);
+    selectedDay=ds;
+    // highlight after render
+    setTimeout(()=>{
+      document.querySelectorAll('.day-cell.selected').forEach(c=>c.classList.remove('selected'));
+      const cell=document.querySelector('[data-date="'+ds+'"]');
+      if(cell) cell.classList.add('selected');
+      openWsPanelToDate(ds);
+    },50);
+  }
 }
 function miniNav(dir){ miniCursor=new Date(miniCursor.getFullYear(),miniCursor.getMonth()+dir,1); renderMini(); }
 function toggleSidebar(){ sidebarVisible=!sidebarVisible; applyPrefs(); savePrefs(); }
@@ -1250,6 +1501,11 @@ function renderMonth(area){
   }
   mv.appendChild(grid);
   area.appendChild(mv);
+  // Re-apply selected highlight after render
+  if(selectedDay){
+    const sel=mv.querySelector('[data-date="'+selectedDay+'"]');
+    if(sel) sel.classList.add('selected');
+  }
 }
 function buildMonthCell(date,otherMonth){
   const dStr=fmtDate(date);
@@ -1276,8 +1532,15 @@ function buildMonthCell(date,otherMonth){
     more.onclick=e=>{e.stopPropagation();openModal(dStr);};
     cell.appendChild(more);
   }
-  // Click to create
-  cell.onclick=()=>openModal(dStr);
+  // Click to create or open workspace to date
+  cell.onclick=()=>{
+    if(wsPanelOpen){
+      selectedDay=dStr;
+      document.querySelectorAll('.day-cell.selected').forEach(c=>c.classList.remove('selected'));
+      cell.classList.add('selected');
+      openWsPanelToDate(dStr);
+    } else { openModal(dStr); }
+  };
   // Drag & drop
   cell.addEventListener('dragover',e=>{ e.preventDefault(); cell.classList.add('drag-over'); });
   cell.addEventListener('dragleave',()=>cell.classList.remove('drag-over'));
@@ -1286,6 +1549,10 @@ function buildMonthCell(date,otherMonth){
   cell.addEventListener('touchstart',e=>handleTouchStart(e,dStr),{passive:true});
   cell.addEventListener('touchend',handleTouchEnd,{passive:true});
   cell.addEventListener('touchmove',handleTouchMove,{passive:true});
+  // Hover tooltip
+  cell.addEventListener('mouseenter',e=>showDayTooltip(date,e));
+  cell.addEventListener('mousemove',e=>moveDayTooltip(e));
+  cell.addEventListener('mouseleave',hideDayTooltip);
   return cell;
 }
 function makePill(ev,date){
@@ -1641,6 +1908,9 @@ function buildYearMonth(year,month){
     yd.textContent=d;
     yd.title=evCount?`${evCount} event${evCount>1?'s':''}`:null;
     yd.onclick=()=>{ cursor=new Date(year,month,d); setView('day'); };
+    yd.addEventListener('mouseenter',e=>showDayTooltip(date,e));
+    yd.addEventListener('mousemove',e=>moveDayTooltip(e));
+    yd.addEventListener('mouseleave',hideDayTooltip);
     mgrid.appendChild(yd);
   }
   mc.appendChild(mgrid);
@@ -2050,28 +2320,123 @@ function handleSearch(q){
   const res=document.getElementById('search-results');
   res.innerHTML='';
   if(!q.trim()){ wrap.classList.remove('has-results'); return; }
+  const inputEl=document.getElementById('search-input');
+  const r=inputEl.getBoundingClientRect();
+  res.style.top=(r.bottom+6)+'px';
+  const left=Math.max(8,Math.min(r.left,window.innerWidth-328));
+  res.style.left=left+'px';
   const ql=q.toLowerCase();
-  const matches=events.filter(ev=>(ev.title||'').toLowerCase().includes(ql)||(ev.description||'').toLowerCase().includes(ql));
-  if(!matches.length){
-    const e=document.createElement('div'); e.className='sr-empty'; e.textContent='No events found'; res.appendChild(e);
-  } else {
-    matches.slice(0,12).forEach(ev=>{
+  let anyResult=false;
+
+  // ── Events ──
+  const evMatches=events.filter(ev=>(ev.title||'').toLowerCase().includes(ql)||(ev.description||'').toLowerCase().includes(ql));
+  if(evMatches.length){
+    anyResult=true;
+    const sec=document.createElement('div'); sec.className='io-section-label'; sec.textContent='Events'; res.appendChild(sec);
+    evMatches.slice(0,6).forEach(ev=>{
       const cal=calendars.find(c=>c.id===(ev.calendarId||'default'));
       const color=ev.color||(cal?cal.color:COLORS[0].hex);
+      // For recurring events: find next upcoming occurrence >= today
+      let displayDate=ev.date;
+      let jumpDate=parseDate(ev.date);
+      const isRecurring=ev.recurrence&&ev.recurrence.type!=='none';
+      if(isRecurring){
+        // Find next occurrence on or after today
+        let d=new Date(today); d.setHours(0,0,0,0);
+        let found=false;
+        for(let i=0;i<730;i++){
+          if(occursOnDate(ev,d)){ jumpDate=new Date(d); displayDate=fmtDate(d); found=true; break; }
+          d.setDate(d.getDate()+1);
+        }
+        // If no future occurrence found (ended), fall back to the original date
+        if(!found){ jumpDate=parseDate(ev.date)||new Date(today); displayDate=ev.date; }
+      }
       const item=document.createElement('div'); item.className='sr-item';
-      const title=document.createElement('div'); title.className='sr-title'; title.textContent=ev.title;
-      const meta=document.createElement('div'); meta.className='sr-meta'; meta.textContent=(cal?cal.name+' · ':'')+ev.date+(ev.start?' · '+ev.start:'');
       item.style.borderLeft=`3px solid ${color}`;
-      item.appendChild(title); item.appendChild(meta);
+      item.innerHTML=`<div class="sr-title">${ev.title||'(no title)'}${isRecurring?' <span style="font-size:0.65rem;color:var(--text3)">↻</span>':''}</div><div class="sr-meta">${displayDate}${ev.start?' · '+fmt12hr(ev.start):''}</div>`;
       item.onclick=()=>{
-        document.getElementById('search-input').value=''; wrap.classList.remove('has-results');
-        cursor=parseDate(ev.date); setView('month');
-        setTimeout(()=>showPopup(ev.id,parseDate(ev.date),{clientX:window.innerWidth/2,clientY:200}),100);
+        document.getElementById('search-input').value=''; wrap.classList.remove('has-results'); collapseSearch();
+        cursor=new Date(jumpDate.getFullYear(),jumpDate.getMonth(),1); setView('month');
+        setTimeout(()=>showPopup(ev.id,jumpDate,{clientX:window.innerWidth/2,clientY:200}),100);
       };
       res.appendChild(item);
     });
   }
+
+  // ── Journal ──
+  const jMatches=journalEntries.filter(e=>(e.text||'').toLowerCase().includes(ql)||(e.title||'').toLowerCase().includes(ql)||(e.tags||[]).some(t=>t.toLowerCase().includes(ql)));
+  if(jMatches.length){
+    anyResult=true;
+    const sec=document.createElement('div'); sec.className='io-section-label'; sec.style.marginTop='4px'; sec.textContent='Journal'; res.appendChild(sec);
+    jMatches.slice(0,4).forEach(e=>{
+      const item=document.createElement('div'); item.className='sr-item';
+      item.style.borderLeft='3px solid var(--accent)';
+      const snippet=(e.text||'').slice(0,80).trim();
+      item.innerHTML=`<div class="sr-title">📓 ${e.date}</div><div class="sr-meta">${snippet?snippet+'…':'(empty)'}</div>`;
+      item.onclick=()=>{
+        document.getElementById('search-input').value=''; wrap.classList.remove('has-results'); collapseSearch();
+        openWsPanelToDate(e.date);
+      };
+      res.appendChild(item);
+    });
+  }
+
+  // ── Notes ──
+  const nMatches=notes.filter(n=>(n.title||'').toLowerCase().includes(ql)||(n.body||'').toLowerCase().includes(ql)||(n.tags||[]).some(t=>t.toLowerCase().includes(ql)));
+  if(nMatches.length){
+    anyResult=true;
+    const sec=document.createElement('div'); sec.className='io-section-label'; sec.style.marginTop='4px'; sec.textContent='Notes'; res.appendChild(sec);
+    nMatches.slice(0,4).forEach(n=>{
+      const item=document.createElement('div'); item.className='sr-item';
+      item.style.borderLeft=`3px solid ${n.color||'var(--text3)'}`;
+      item.innerHTML=`<div class="sr-title">📝 ${n.title||'Untitled'}</div><div class="sr-meta">${(n.body||'').slice(0,60).trim()+'…'}</div>`;
+      item.onclick=()=>{
+        document.getElementById('search-input').value=''; wrap.classList.remove('has-results'); collapseSearch();
+        if(!wsPanelOpen) toggleWsPanel();
+        wsTab='notes'; switchWsTab('notes');
+        setTimeout(()=>openNoteEditor(n.id),120);
+      };
+      res.appendChild(item);
+    });
+  }
+
+  // ── Todos ──
+  const todoMatches=[];
+  todoLists.forEach(l=>(l.items||[]).forEach(i=>{ if((i.text||'').toLowerCase().includes(ql)) todoMatches.push({list:l,item:i}); }));
+  if(todoMatches.length){
+    anyResult=true;
+    const sec=document.createElement('div'); sec.className='io-section-label'; sec.style.marginTop='4px'; sec.textContent='Todos'; res.appendChild(sec);
+    todoMatches.slice(0,4).forEach(({list,item})=>{
+      const it=document.createElement('div'); it.className='sr-item';
+      it.style.borderLeft=`3px solid ${list.color||COLORS[0].hex}`;
+      it.innerHTML=`<div class="sr-title">✅ ${item.text}</div><div class="sr-meta">${list.name}${item.done?' · Done':''}</div>`;
+      it.onclick=()=>{
+        document.getElementById('search-input').value=''; wrap.classList.remove('has-results'); collapseSearch();
+        if(!wsPanelOpen) toggleWsPanel();
+        switchWsTab('todos');
+      };
+      res.appendChild(it);
+    });
+  }
+
+  if(!anyResult){
+    const e=document.createElement('div'); e.className='sr-empty'; e.textContent='No results found'; res.appendChild(e);
+  }
   wrap.classList.add('has-results');
+}
+function toggleSearch(){
+  const wrap=document.getElementById('search-wrap');
+  const inp=document.getElementById('search-input');
+  if(wrap.classList.contains('expanded')){collapseSearch();}
+  else{wrap.classList.remove('icon-mode');wrap.classList.add('expanded');inp.focus();}
+}
+function collapseSearch(){
+  const wrap=document.getElementById('search-wrap');
+  const inp=document.getElementById('search-input');
+  wrap.classList.remove('expanded');wrap.classList.add('icon-mode');
+  wrap.classList.remove('has-results');
+  inp.value='';
+  document.getElementById('search-results').innerHTML='';
 }
 // Close search on outside click is handled in the main click listener
 
@@ -2644,6 +3009,11 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
+    // Note editor has highest priority — escape inside it should only close it
+    if(document.getElementById('journal-overlay').style.display==='flex'){ closeJournalEditor(); return; }
+    if(document.getElementById('note-overlay').style.display!=='none'){ closeNoteEditor(); return; }
+    // Todo list modal
+    if(document.getElementById('todolist-overlay').classList.contains('open')){ closeTodoListModal(); return; }
     const anyOpen=[
       document.getElementById('modal-overlay'),document.getElementById('copy-overlay'),
       document.getElementById('del-overlay'),document.getElementById('import-overlay'),
@@ -2657,26 +3027,1264 @@ document.addEventListener('keydown',e=>{
       closeModal();closePopup();closeCopyModal();closeDelDialog();closeImportModal();
       closeLabelModal();closeCalModal();closeHabitModal();closeSettings();closeRoomModal();closeFbSetup();
       document.getElementById('io-wrapper').classList.remove('open');closeJumpDropdown();
+      collapseSearch();
     } else { toggleSidebar(); }
     return;
   }
-  if(e.target.matches('input,select,textarea')) return;
-  const mo=document.getElementById('modal-overlay');
-  if(!mo.classList.contains('open')){
-    if(e.key==='ArrowLeft') navigate(-1);
-    if(e.key==='ArrowRight') navigate(1);
-    if(e.key==='n') openModal();
-    if(e.key==='g') openJumpToDate();
-    if(e.key==='t') goToday();
-    if(e.key==='m') setView('month');
-    if(e.key==='w') setView('week');
-    if(e.key==='d') setView('day');
-    if(e.key==='a') setView('agenda');
-    if(e.key==='y') setView('year');
-    if(e.key==='?'||e.key==='/') document.getElementById('search-input').focus();
+  // Backspace = toggle workspace panel (month view only, no popup open)
+  if(e.key==='Backspace'&&e.target===document.body){
+    const anyOpen=[
+      document.getElementById('modal-overlay'),document.getElementById('note-overlay'),
+      document.getElementById('todolist-overlay'),document.getElementById('event-popup'),
+    ].some(el=>el&&(el.classList.contains('open')||el.style.display==='flex'));
+    if(!anyOpen && view==='month'){e.preventDefault();toggleWsPanel();}
   }
 });
 setInterval(()=>{ if(view==='week'||view==='day') renderCalendar(); today=new Date(); },60000);
+
+// ══════════════════════════════════════════
+// WORKSPACE PANEL  (Journal · Notes · Todos)
+// ══════════════════════════════════════════
+
+// ── Panel control ──
+function toggleWsPanel(){
+  wsPanelOpen=!wsPanelOpen;
+  document.getElementById('ws-panel').classList.toggle('open',wsPanelOpen);
+  document.getElementById('ws-panel-btn').classList.toggle('active',wsPanelOpen);
+  if(wsPanelOpen){
+    // Default journal to today when opening without a selected date
+    if(wsTab==='journal' && !wsDateCtx){
+      wsDateCtx=fmtDate(today); saveWsCtx();
+      selectedDay=wsDateCtx;
+    }
+    renderWsPanel();
+    // Highlight today cell if selecting today
+    if(selectedDay){
+      setTimeout(()=>{
+        document.querySelectorAll('.day-cell.selected').forEach(c=>c.classList.remove('selected'));
+        const cell=document.querySelector('[data-date="'+selectedDay+'"]');
+        if(cell) cell.classList.add('selected');
+      },50);
+    }
+  }
+}
+function closeWsPanel(){
+  wsPanelOpen=false;
+  wsDateCtx=null;
+  selectedDay=null;
+  document.getElementById('ws-panel').classList.remove('open');
+  document.getElementById('ws-panel-btn').classList.remove('active');
+  // Remove day selection highlight
+  document.querySelectorAll('.day-cell.selected').forEach(c=>c.classList.remove('selected'));
+}
+function switchWsTab(tab){
+  wsTab=tab;
+  ['journal','notes','todos'].forEach(t=>{
+    document.getElementById('ws-tab-'+t).classList.toggle('active',t===tab);
+  });
+  renderWsPanel();
+}
+function wsNewItem(){
+  if(wsTab==='journal') newJournalEntry(wsDateCtx);
+  else if(wsTab==='notes') openNoteEditor(null);
+  else openTodoListModal(null);
+}
+function renderWsPanel(){
+  const body=document.getElementById('ws-body');
+  document.getElementById('ws-header-title').textContent=
+    wsTab==='journal'?'Journal':wsTab==='notes'?'Notes':'To-do Lists';
+  if(wsTab==='journal') renderJournal(body);
+  else if(wsTab==='notes') renderNotes(body);
+  else renderTodos(body);
+}
+// Open WS panel navigated to a specific date
+function openWsPanelToDate(dateStr){
+  wsDateCtx=dateStr; saveWsCtx();
+  if(!wsPanelOpen){
+    toggleWsPanel();
+  } else {
+    renderWsPanel();
+  }
+}
+function clearWsDateCtx(){
+  wsDateCtx=null; saveWsCtx();
+  selectedDay=null;
+  document.querySelectorAll('.day-cell.selected').forEach(c=>c.classList.remove('selected'));
+  renderWsPanel();
+}
+
+// ══════════════════════════════════════════
+// JOURNAL
+// ══════════════════════════════════════════
+const MOODS=['😊','😐','😔','😤','🤩','😴','🥰','😰'];
+
+function newJournalEntry(dateStr){
+  const ds=dateStr||fmtDate(today);
+  const entry={id:uuid(),date:ds,text:'',mood:null,tags:[],createdAt:Date.now()};
+  journalEntries.push(entry);
+  journalEntries.sort((a,b)=>{
+    if(b.date!==a.date) return b.date.localeCompare(a.date);
+    return (b.createdAt||0)-(a.createdAt||0);
+  });
+  saveJournal();
+  if(fbDb&&currentRoom) fbSaveJournalEntry(entry);
+  // Inject card into DOM without full re-render (preserves focus in existing textareas)
+  const body=document.getElementById('ws-body');
+  if(body&&wsTab==='journal'&&wsPanelOpen){
+    const todayStr=fmtDate(today);
+    const card=buildJournalCard(entry,todayStr,true,true);
+    // Find the add-btn and insert before it
+    const addBtn=body.querySelector('.journal-new-btn');
+    if(addBtn) body.insertBefore(card,addBtn);
+    else body.appendChild(card);
+  } else {
+    renderWsPanel();
+  }
+  // Open in overlay editor immediately
+  setTimeout(()=>openJournalEditor(entry.id),60);
+}
+
+function buildJournalCard(entry, todayStr, forceExpand, inDateCtx){
+  const wc=entry.text.trim()?entry.text.trim().split(/\s+/).length:0;
+  const fmtDs=ds=>{const d=parseDate(ds);return d?DAYS[d.getDay()]+', '+MONTHS[d.getMonth()].slice(0,3)+' '+d.getDate()+', '+d.getFullYear():ds;};
+  const entryTime=entry.createdAt
+    ? new Date(entry.createdAt).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true})
+    : '';
+  const timeLabel=inDateCtx ? entryTime : fmtDs(entry.date);
+  const titleLabel=entry.title||'';
+  const snippet=(entry.text||'').trim().slice(0,60);
+  const tags=(entry.tags||[]).map(t=>`<span class="journal-tag" style="pointer-events:none">${escHtml(t)}</span>`).join('');
+  const card=document.createElement('div');
+  card.className='journal-day-entry'; card.id='jcard-'+entry.id;
+  card.onclick=()=>openJournalEditor(entry.id);
+  card.innerHTML=`
+    <div style="padding:9px 12px 8px">
+      <div style="display:flex;align-items:baseline;gap:6px;min-width:0">
+        <div style="font-size:0.82rem;font-weight:600;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+          ${titleLabel?escHtml(titleLabel):'<span style="color:var(--text3);font-weight:400;font-style:italic">Untitled entry</span>'}
+        </div>
+        ${entry.mood?`<span style="font-size:0.75rem;flex-shrink:0">${entry.mood}</span>`:''}
+        <span style="font-size:0.62rem;color:var(--text3);flex-shrink:0;white-space:nowrap">${timeLabel}</span>
+      </div>
+      <div style="font-size:0.65rem;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+        ${wc?wc+' words':'Empty'}${snippet&&!titleLabel?' · '+escHtml(snippet.slice(0,50)):''}
+      </div>
+      ${tags?`<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:5px">${tags}</div>`:''}
+    </div>`;
+  return card;
+}
+
+// ── JOURNAL EDITOR OVERLAY FUNCTIONS ──
+function openJournalEditor(id){
+  editingJournalId=id;
+  const entry=id?journalEntries.find(e=>e.id===id):null;
+  const fmtDs=ds=>{const d=parseDate(ds);return d?DAYS[d.getDay()]+', '+MONTHS[d.getMonth()].slice(0,3)+' '+d.getDate()+', '+d.getFullYear():ds;};
+  document.getElementById('je-ov-title').value=entry?.title||'';
+  document.getElementById('je-ov-ta').value=entry?.text||'';
+  document.getElementById('je-ov-date').textContent=entry?fmtDs(entry.date)+(entry.createdAt?' · '+new Date(entry.createdAt).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}):''):'';
+  // Mood picker
+  const moodEl=document.getElementById('je-ov-mood');
+  moodEl.innerHTML=MOODS.map(m=>`<span class="mood-btn${entry?.mood===m?' sel':''}" onclick="jeOvSetMood('${m}')">${m}</span>`).join('');
+  // Tags
+  renderJournalOvTags(entry?.tags||[]);
+  document.getElementById('je-ov-status').textContent=entry?'Last saved '+timeAgo(entry.updatedAt):'New entry';
+  // Reset fmt toggle state
+  const ta=document.getElementById('je-ov-ta');
+  delete ta.dataset.boldStart; delete ta.dataset.italicStart;
+  ['je-ov-bold-btn','je-ov-italic-btn'].forEach(b=>{const el=document.getElementById(b);if(el)el.classList.remove('active');});
+  document.getElementById('journal-overlay').style.display='flex';
+  setTimeout(()=>{ const ta=document.getElementById('je-ov-ta'); if(ta){ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);} },80);
+}
+function handleJournalOverlayClick(e){if(e.target===document.getElementById('journal-overlay'))closeJournalEditor();}
+function closeJournalEditor(){
+  jeOvSave();
+  document.getElementById('journal-overlay').style.display='none';
+  editingJournalId=null;
+  if(wsPanelOpen&&wsTab==='journal') renderWsPanel();
+}
+function jeOvSave(){
+  const title=document.getElementById('je-ov-title').value;
+  const text=document.getElementById('je-ov-ta').value;
+  if(!editingJournalId) return;
+  const e=journalEntries.find(x=>x.id===editingJournalId);
+  if(!e) return;
+  e.title=title; e.text=text; e.updatedAt=Date.now();
+  saveJournal();
+  if(fbDb&&currentRoom) fbSaveJournalEntry(e);
+  // Update sidebar card without full re-render
+  const card=document.getElementById('jcard-'+editingJournalId);
+  if(card){
+    const wc=e.text.trim()?e.text.trim().split(/\s+/).length:0;
+    const titleEl=card.querySelector('div[style*="font-weight:600"]');
+    if(titleEl) titleEl.innerHTML=e.title?escHtml(e.title):'<span style="color:var(--text3);font-weight:400;font-style:italic">Untitled entry</span>';
+    const subEl=card.querySelectorAll('div[style*="font-size:0.65rem"]')[0];
+    if(subEl) subEl.textContent=(wc?wc+' words':'Empty')+((!e.title&&e.text)?' · '+e.text.trim().slice(0,60):'');
+  }
+  document.getElementById('je-ov-status').textContent='Saved just now';
+}
+function jeOvSetMood(mood){
+  const e=journalEntries.find(x=>x.id===editingJournalId);if(!e) return;
+  e.mood=e.mood===mood?null:mood;saveJournal();if(fbDb&&currentRoom) fbSaveJournalEntry(e);
+  document.getElementById('je-ov-mood').innerHTML=MOODS.map(m=>`<span class="mood-btn${e.mood===m?' sel':''}" onclick="jeOvSetMood('${m}')">${m}</span>`).join('');
+}
+function jeOvInput(){
+  clearTimeout(window._jeOvSave);
+  window._jeOvSave=setTimeout(()=>{jeOvSave();},800);
+}
+function jeOvFmt(fmtKey){
+  const ta=document.getElementById('je-ov-ta');if(!ta) return;
+  const marker=fmtKey==='bold'?'**':'_';
+  const s=ta.selectionStart,e2=ta.selectionEnd;
+  const startKey=fmtKey+'Start';
+  if(s!==e2){
+    const sel=ta.value.slice(s,e2);
+    if(ta.value.slice(s-marker.length,s)===marker&&ta.value.slice(e2,e2+marker.length)===marker){
+      ta.value=ta.value.slice(0,s-marker.length)+sel+ta.value.slice(e2+marker.length);
+      ta.selectionStart=s-marker.length;ta.selectionEnd=s-marker.length+sel.length;
+    } else {
+      ta.value=ta.value.slice(0,s)+marker+sel+marker+ta.value.slice(e2);
+      ta.selectionStart=s+marker.length;ta.selectionEnd=s+marker.length+sel.length;
+    }
+    delete ta.dataset[startKey];
+    document.getElementById('je-ov-'+fmtKey+'-btn')?.classList.remove('active');
+    ta.focus();jeOvInput();return;
+  }
+  if(ta.dataset[startKey]!==undefined){
+    const sp=parseInt(ta.dataset[startKey]),ep=ta.selectionStart;
+    delete ta.dataset[startKey];
+    document.getElementById('je-ov-'+fmtKey+'-btn')?.classList.remove('active');
+    if(ep>sp){const t=ta.value.slice(sp,ep);ta.value=ta.value.slice(0,sp)+marker+t+marker+ta.value.slice(ep);ta.selectionStart=ta.selectionEnd=sp+marker.length+t.length+marker.length;}
+    ta.focus();jeOvInput();
+  } else {
+    ta.dataset[startKey]=String(ta.selectionStart);
+    document.getElementById('je-ov-'+fmtKey+'-btn')?.classList.add('active');
+    ta.focus();
+  }
+}
+function jeOvFmtLine(prefix){
+  const ta=document.getElementById('je-ov-ta');if(!ta) return;
+  const s=ta.selectionStart;
+  const lineStart=ta.value.lastIndexOf('\n',s-1)+1;
+  ta.value=ta.value.slice(0,lineStart)+prefix+ta.value.slice(lineStart);
+  ta.selectionStart=ta.selectionEnd=s+prefix.length;
+  ta.focus();jeOvInput();
+}
+function jeOvKeydown(e){
+  const ta=document.getElementById('je-ov-ta');if(!ta) return;
+  if(e.key==='Enter'){
+    const pos=ta.selectionStart;
+    const lineStart=ta.value.lastIndexOf('\n',pos-1)+1;
+    const line=ta.value.slice(lineStart,pos);
+    const bulletMatch=line.match(/^(•\s)/);
+    const numMatch=line.match(/^(\d+)\.\s/);
+    if(bulletMatch){
+      e.preventDefault();
+      if(line.trim()==='•'){ta.value=ta.value.slice(0,lineStart)+ta.value.slice(pos);ta.selectionStart=ta.selectionEnd=lineStart;jeOvInput();return;}
+      const ins='\n'+bulletMatch[1];
+      ta.value=ta.value.slice(0,pos)+ins+ta.value.slice(pos);
+      ta.selectionStart=ta.selectionEnd=pos+ins.length;
+      jeOvScrollCaret(ta);jeOvInput();
+    } else if(numMatch){
+      e.preventDefault();
+      const nextNum=parseInt(numMatch[1])+1;
+      if(line.trim()===numMatch[1]+'.'){ta.value=ta.value.slice(0,lineStart)+ta.value.slice(pos);ta.selectionStart=ta.selectionEnd=lineStart;jeOvInput();return;}
+      const ins='\n'+nextNum+'. ';
+      ta.value=ta.value.slice(0,pos)+ins+ta.value.slice(pos);
+      ta.selectionStart=ta.selectionEnd=pos+ins.length;
+      jeOvScrollCaret(ta);jeOvInput();
+    } else {
+      // Plain enter: scroll caret into view after browser default
+      requestAnimationFrame(()=>jeOvScrollCaret(ta));
+    }
+  } else if(e.key==='Escape'){
+    e.stopPropagation();closeJournalEditor();
+  }
+}
+function jeOvScrollCaret(ta){ _scrollTaCaret(ta); }
+function jeOvAddTag(){
+  const row=document.getElementById('je-ov-tags');
+  if(row){const inp=row.querySelector('input');if(inp){inp.focus();return;}}
+  // Re-render tags to ensure input is there
+  const e=journalEntries.find(x=>x.id===editingJournalId);
+  renderJournalOvTags(e?.tags||[]);
+  setTimeout(()=>{const inp=document.querySelector('#je-ov-tags input');if(inp)inp.focus();},30);
+}
+function renderJournalOvTags(tags){
+  const row=document.getElementById('je-ov-tags');if(!row) return;
+  row.innerHTML='';
+  (tags||[]).forEach(t=>{
+    const span=document.createElement('span');span.className='note-tag';
+    span.textContent=t;span.title='Click to remove';
+    span.onclick=()=>removeJournalOvTag(t);
+    row.appendChild(span);
+  });
+  const wrap=document.createElement('div');wrap.style.cssText='position:relative;display:inline-flex;align-items:center';
+  const inp=document.createElement('input');
+  inp.placeholder='+ Tag';
+  inp.style.cssText='background:none;border:1px dashed var(--border);border-radius:10px;color:var(--text3);font-size:0.65rem;padding:2px 8px;font-family:inherit;outline:none;width:80px';
+  inp.setAttribute('autocomplete','off');
+  const drop=document.createElement('div');
+  drop.style.cssText='position:absolute;top:100%;left:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;max-height:120px;overflow-y:auto;z-index:9999;display:none;box-shadow:0 4px 16px var(--shadow);min-width:120px;margin-top:2px';
+  const showAC=q=>{
+    const allTags=new Set();
+    journalEntries.forEach(e=>(e.tags||[]).forEach(t=>allTags.add(t)));
+    notes.forEach(n=>(n.tags||[]).forEach(t=>allTags.add(t)));
+    const ql=q.toLowerCase();
+    const curEntry=journalEntries.find(x=>x.id===editingJournalId);
+    const matches=[...allTags].filter(t=>(!ql||t.startsWith(ql))&&!(curEntry?.tags||[]).includes(t));
+    if(!matches.length){drop.style.display='none';return;}
+    drop.innerHTML='';
+    matches.slice(0,6).forEach(t=>{
+      const r=document.createElement('div');
+      r.style.cssText='padding:5px 10px;cursor:pointer;font-size:0.75rem;color:var(--text2);border-bottom:1px solid var(--border)';
+      r.textContent=t;
+      r.onmousedown=ev=>{ev.preventDefault();addJournalOvTag(t);inp.value='';drop.style.display='none';};
+      r.onmouseenter=()=>r.style.background='var(--surface2)';r.onmouseleave=()=>r.style.background='';
+      drop.appendChild(r);
+    });
+    drop.style.display='block';
+  };
+  inp.addEventListener('input',()=>showAC(inp.value));
+  inp.addEventListener('focus',()=>showAC(inp.value));
+  inp.addEventListener('blur',()=>setTimeout(()=>{drop.style.display='none';},150));
+  inp.onkeydown=e=>{
+    if(e.key==='Enter'&&inp.value.trim()){e.preventDefault();addJournalOvTag(inp.value.trim());inp.value='';drop.style.display='none';}
+    if(e.key==='Escape'){e.stopPropagation();inp.blur();}
+  };
+  wrap.appendChild(inp);wrap.appendChild(drop);row.appendChild(wrap);
+}
+function addJournalOvTag(tag){
+  const t=tag.trim().toLowerCase();if(!t||!editingJournalId) return;
+  const e=journalEntries.find(x=>x.id===editingJournalId);if(!e) return;
+  if(!e.tags) e.tags=[];
+  if(!e.tags.includes(t)){e.tags.push(t);saveJournal();if(fbDb&&currentRoom)fbSaveJournalEntry(e);renderJournalOvTags(e.tags);}
+}
+function removeJournalOvTag(tag){
+  const e=journalEntries.find(x=>x.id===editingJournalId);if(!e) return;
+  e.tags=(e.tags||[]).filter(t=>t!==tag);saveJournal();if(fbDb&&currentRoom)fbSaveJournalEntry(e);renderJournalOvTags(e.tags);
+}
+function delJEFromOverlay(){
+  if(!editingJournalId||!confirm('Delete this journal entry?')) return;
+  journalEntries=journalEntries.filter(e=>e.id!==editingJournalId);
+  saveJournal();if(fbDb&&currentRoom) fbDeleteJournalEntry(editingJournalId);
+  document.getElementById('journal-overlay').style.display='none';
+  editingJournalId=null;
+  if(wsPanelOpen&&wsTab==='journal') renderWsPanel();
+}
+
+
+
+function renderJournal(body){
+  body.innerHTML='';
+  const todayStr=fmtDate(today);
+  const fmtDs=ds=>{const d=parseDate(ds);return d?DAYS[d.getDay()]+', '+MONTHS[d.getMonth()].slice(0,3)+' '+d.getDate()+', '+d.getFullYear():ds;};
+
+  // ── DATE CONTEXT MODE: show only that one day ──
+  if(wsDateCtx){
+    // Back button
+    const back=document.createElement('button');
+    back.style.cssText='display:flex;align-items:center;gap:5px;width:100%;padding:6px 8px;background:none;border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:inherit;font-size:0.76rem;cursor:pointer;margin-bottom:10px;transition:all 0.12s';
+    back.innerHTML='← All Entries';
+    back.onmouseenter=()=>back.style.borderColor='var(--accent)';
+    back.onmouseleave=()=>back.style.borderColor='var(--border)';
+    back.onclick=clearWsDateCtx;
+    body.appendChild(back);
+
+    // Date heading
+    const heading=document.createElement('div');
+    heading.style.cssText='font-size:0.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px';
+    heading.textContent=fmtDs(wsDateCtx)+(wsDateCtx===todayStr?' · Today':'');
+    body.appendChild(heading);
+
+    const dayEntries=journalEntries.filter(e=>e.date===wsDateCtx)
+      .sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+    if(dayEntries.length){
+      const newestId=dayEntries[dayEntries.length-1].id;
+      dayEntries.forEach((entry)=>{
+        // Only force-expand the newest entry; respect collapse state of older ones
+        const forceExp=entry.id===newestId&&!entry._collapsedManually;
+        body.appendChild(buildJournalCard(entry, todayStr, forceExp, true));
+      });
+    } else {
+      const empty=document.createElement('div');
+      empty.className='ws-empty'; empty.style.padding='16px 8px';
+      empty.textContent='No journal entries for this day yet.';
+      body.appendChild(empty);
+    }
+    const addBtn=document.createElement('button');
+    addBtn.className='journal-new-btn';
+    addBtn.textContent='+ Add Another Entry';
+    addBtn.onclick=()=>newJournalEntry(wsDateCtx);
+    body.appendChild(addBtn);
+    return;
+  }
+
+  // ── ALL ENTRIES MODE ──
+  if(!journalEntries.length){
+    body.innerHTML='<div class="ws-empty">No journal entries yet.<br><br>Click any date on the calendar to write in your journal for that day.</div>';
+    const btn=document.createElement('button');btn.className='journal-new-btn';btn.textContent='+ New Entry for Today';
+    btn.onclick=()=>newJournalEntry(null);body.appendChild(btn);return;
+  }
+
+  // Group by month
+  const byMonth={};
+  journalEntries.forEach(e=>{const k=e.date.slice(0,7);(byMonth[k]||(byMonth[k]=[])).push(e);});
+  const hasToday=journalEntries.some(e=>e.date===todayStr);
+
+  Object.keys(byMonth).sort().reverse().forEach(mo=>{
+    const[y,m]=mo.split('-').map(Number);
+    const lbl=document.createElement('div');
+    lbl.style.cssText='font-size:0.65rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin:8px 0 5px;padding:0 2px';
+    lbl.textContent=MONTHS[m-1]+' '+y; body.appendChild(lbl);
+    byMonth[mo].forEach(entry=>body.appendChild(buildJournalCard(entry, todayStr, false)));
+  });
+
+  if(!hasToday){
+    const btn=document.createElement('button');btn.className='journal-new-btn';btn.textContent='+ New Entry for Today';btn.onclick=()=>newJournalEntry(null);body.appendChild(btn);
+  }
+}
+function renderJTags(entry){
+  const tags=entry.tags||[];
+  if(!tags.length) return '<span style="font-size:0.65rem;color:var(--text3)">No tags yet</span>';
+  return tags.map(t=>`<span class="journal-tag" onclick="removeJT('${entry.id}','${t}')" title="Remove">${t}</span>`).join('');
+}
+function toggleJE(id){ openJournalEditor(id); }
+function onJI(id,val){
+  const e=journalEntries.find(x=>x.id===id);if(e){e.text=val;e.updatedAt=Date.now();}
+  clearTimeout(window._jSave);
+  window._jSave=setTimeout(()=>{saveJournal();if(fbDb&&currentRoom){const en=journalEntries.find(x=>x.id===id);if(en)fbSaveJournalEntry(en);}showToast('Journal saved');},1200);
+}
+function onJITitle(id,val){
+  const e=journalEntries.find(x=>x.id===id);if(e){e.title=val;e.updatedAt=Date.now();}
+  clearTimeout(window._jSave);
+  window._jSave=setTimeout(()=>{saveJournal();if(fbDb&&currentRoom){const en=journalEntries.find(x=>x.id===id);if(en)fbSaveJournalEntry(en);}},800);
+}
+function setMood(id,mood){
+  const e=journalEntries.find(x=>x.id===id);if(!e) return;
+  e.mood=e.mood===mood?null:mood;saveJournal();if(fbDb&&currentRoom) fbSaveJournalEntry(e);
+  const el=document.getElementById('mood-'+id);
+  if(el) el.innerHTML=MOODS.map(m=>`<span class="mood-btn${e.mood===m?' sel':''}" onclick="setMood('${id}','${m}')">${m}</span>`).join('');
+  const hdr=document.querySelector(`#je-${e.date} .journal-day-hdr > div:last-child`);
+  if(hdr) hdr.innerHTML=`${e.mood?`<span>${e.mood}</span>`:''}<span style="font-size:0.7rem;color:var(--text3)">${e._collapsed?'▶':'▼'}</span>`;
+}
+// Bold/italic toggle: state stored in textarea dataset so it survives DOM ops
+function jiInsert(id, marker, marker2){
+  const ta=document.getElementById('je-ta-'+id); if(!ta) return;
+  const fmtKey=marker==='**'?'bold':'italic';
+  const s=ta.selectionStart, e2=ta.selectionEnd;
+
+  if(s!==e2){
+    // Wrap or unwrap selected text
+    const sel=ta.value.slice(s,e2);
+    if(ta.value.slice(s-marker.length,s)===marker && ta.value.slice(e2,e2+marker2.length)===marker2){
+      ta.value=ta.value.slice(0,s-marker.length)+sel+ta.value.slice(e2+marker2.length);
+      ta.selectionStart=s-marker.length; ta.selectionEnd=s-marker.length+sel.length;
+    } else {
+      ta.value=ta.value.slice(0,s)+marker+sel+marker2+ta.value.slice(e2);
+      ta.selectionStart=s+marker.length; ta.selectionEnd=s+marker.length+sel.length;
+    }
+    // Clear toggle mode since user used selection
+    delete ta.dataset[fmtKey+'Start'];
+    const btn=document.getElementById('je-'+fmtKey+'-'+id);
+    if(btn) btn.classList.remove('active');
+    ta.focus(); onJI(id,ta.value);
+    return;
+  }
+
+  // No selection: toggle mode
+  const startKey=fmtKey+'Start';
+  if(ta.dataset[startKey]!==undefined){
+    // Turn OFF — wrap text typed since toggle-on
+    const startPos=parseInt(ta.dataset[startKey]);
+    const endPos=ta.selectionStart;
+    delete ta.dataset[startKey];
+    const btn=document.getElementById('je-'+fmtKey+'-'+id);
+    if(btn) btn.classList.remove('active');
+    if(endPos>startPos){
+      const typed=ta.value.slice(startPos,endPos);
+      ta.value=ta.value.slice(0,startPos)+marker+typed+marker2+ta.value.slice(endPos);
+      ta.selectionStart=ta.selectionEnd=startPos+marker.length+typed.length+marker2.length;
+    }
+    ta.focus(); onJI(id,ta.value);
+  } else {
+    // Turn ON — record position
+    ta.dataset[startKey]=String(ta.selectionStart);
+    const btn=document.getElementById('je-'+fmtKey+'-'+id);
+    if(btn) btn.classList.add('active');
+    ta.focus();
+  }
+}
+
+function jiKeydown(e,id){
+  if(e.key!=='Enter') return;
+  const ta=document.getElementById('je-ta-'+id); if(!ta) return;
+  const pos=ta.selectionStart;
+  const lineStart=ta.value.lastIndexOf('\n',pos-1)+1;
+  const line=ta.value.slice(lineStart,pos);
+  // Detect bullet
+  const bulletMatch=line.match(/^(•\s)/);
+  const numMatch=line.match(/^(\d+)\.\s/);
+  if(bulletMatch){
+    e.preventDefault();
+    // If line is just the bullet with no content, clear the line
+    if(line.trim()==='•'){ta.value=ta.value.slice(0,lineStart)+ta.value.slice(pos);ta.selectionStart=ta.selectionEnd=lineStart;onJI(id,ta.value);return;}
+    const ins='\n'+bulletMatch[1];
+    ta.value=ta.value.slice(0,pos)+ins+ta.value.slice(pos);
+    ta.selectionStart=ta.selectionEnd=pos+ins.length;
+    onJI(id,ta.value);
+  } else if(numMatch){
+    e.preventDefault();
+    const nextNum=parseInt(numMatch[1])+1;
+    if(line.trim()===numMatch[1]+'.'){ta.value=ta.value.slice(0,lineStart)+ta.value.slice(pos);ta.selectionStart=ta.selectionEnd=lineStart;onJI(id,ta.value);return;}
+    const ins='\n'+nextNum+'. ';
+    ta.value=ta.value.slice(0,pos)+ins+ta.value.slice(pos);
+    ta.selectionStart=ta.selectionEnd=pos+ins.length;
+    onJI(id,ta.value);
+  }
+}
+function _scrollTaCaret(ta){
+  const lh=parseFloat(getComputedStyle(ta).lineHeight)||22;
+  const lines=ta.value.substring(0,ta.selectionStart).split('\n').length;
+  ta.scrollTop=Math.max(0,lines*lh-ta.clientHeight+lh*2);
+}
+function noteKeydown(e){
+  if(e.key!=='Enter') return;
+  const ta=document.getElementById('note-body-inp'); if(!ta) return;
+  const pos=ta.selectionStart;
+  const lineStart=ta.value.lastIndexOf('\n',pos-1)+1;
+  const line=ta.value.slice(lineStart,pos);
+  const bulletMatch=line.match(/^(•\s)/);
+  const numMatch=line.match(/^(\d+)\.\s/);
+  if(bulletMatch){
+    e.preventDefault();
+    if(line.trim()==='•'){ta.value=ta.value.slice(0,lineStart)+ta.value.slice(pos);ta.selectionStart=ta.selectionEnd=lineStart;clearTimeout(noteAutoSaveTimer);noteAutoSaveTimer=setTimeout(autoSaveNote,400);return;}
+    const ins='\n'+bulletMatch[1];
+    ta.value=ta.value.slice(0,pos)+ins+ta.value.slice(pos);
+    ta.selectionStart=ta.selectionEnd=pos+ins.length;
+    _scrollTaCaret(ta);clearTimeout(noteAutoSaveTimer);noteAutoSaveTimer=setTimeout(autoSaveNote,400);
+  } else if(numMatch){
+    e.preventDefault();
+    const nextNum=parseInt(numMatch[1])+1;
+    if(line.trim()===numMatch[1]+'.'){ta.value=ta.value.slice(0,lineStart)+ta.value.slice(pos);ta.selectionStart=ta.selectionEnd=lineStart;clearTimeout(noteAutoSaveTimer);noteAutoSaveTimer=setTimeout(autoSaveNote,400);return;}
+    const ins='\n'+nextNum+'. ';
+    ta.value=ta.value.slice(0,pos)+ins+ta.value.slice(pos);
+    ta.selectionStart=ta.selectionEnd=pos+ins.length;
+    _scrollTaCaret(ta);clearTimeout(noteAutoSaveTimer);noteAutoSaveTimer=setTimeout(autoSaveNote,400);
+  } else {
+    requestAnimationFrame(()=>_scrollTaCaret(ta));
+  }
+}
+function jiInsertLine(id,prefix){
+  const ta=document.getElementById('je-ta-'+id);if(!ta) return;
+  const s=ta.selectionStart;
+  const lineStart=ta.value.lastIndexOf('\n',s-1)+1;
+  ta.value=ta.value.slice(0,lineStart)+prefix+ta.value.slice(lineStart);
+  ta.selectionStart=ta.selectionEnd=s+prefix.length;
+  ta.focus();onJI(id,ta.value);
+}
+
+function noteFmt(fmtKey){
+  const ta=document.getElementById('note-body-inp');if(!ta) return;
+  const marker=fmtKey==='bold'?'**':'_';
+  const s=ta.selectionStart,e2=ta.selectionEnd;
+  const startKey=fmtKey+'Start';
+  if(s!==e2){
+    const sel=ta.value.slice(s,e2);
+    if(ta.value.slice(s-marker.length,s)===marker && ta.value.slice(e2,e2+marker.length)===marker){
+      ta.value=ta.value.slice(0,s-marker.length)+sel+ta.value.slice(e2+marker.length);
+      ta.selectionStart=s-marker.length; ta.selectionEnd=s-marker.length+sel.length;
+    } else {
+      ta.value=ta.value.slice(0,s)+marker+sel+marker+ta.value.slice(e2);
+      ta.selectionStart=s+marker.length; ta.selectionEnd=s+marker.length+sel.length;
+    }
+    delete ta.dataset[startKey];
+    const btn=document.getElementById('note-'+fmtKey+'-btn');if(btn) btn.classList.remove('active');
+    ta.focus(); clearTimeout(noteAutoSaveTimer);noteAutoSaveTimer=setTimeout(autoSaveNote,400);
+    return;
+  }
+  if(ta.dataset[startKey]!==undefined){
+    const sp=parseInt(ta.dataset[startKey]),ep=ta.selectionStart;
+    delete ta.dataset[startKey];
+    const btn=document.getElementById('note-'+fmtKey+'-btn');if(btn) btn.classList.remove('active');
+    if(ep>sp){const t=ta.value.slice(sp,ep);ta.value=ta.value.slice(0,sp)+marker+t+marker+ta.value.slice(ep);ta.selectionStart=ta.selectionEnd=sp+marker.length+t.length+marker.length;}
+    ta.focus(); clearTimeout(noteAutoSaveTimer);noteAutoSaveTimer=setTimeout(autoSaveNote,400);
+  } else {
+    ta.dataset[startKey]=String(ta.selectionStart);
+    const btn=document.getElementById('note-'+fmtKey+'-btn');if(btn) btn.classList.add('active');
+    ta.focus();
+  }
+}
+function noteFmtLine(prefix){
+  const ta=document.getElementById('note-body-inp');if(!ta) return;
+  const s=ta.selectionStart;
+  const lineStart=ta.value.lastIndexOf('\n',s-1)+1;
+  ta.value=ta.value.slice(0,lineStart)+prefix+ta.value.slice(lineStart);
+  ta.selectionStart=ta.selectionEnd=s+prefix.length;
+  ta.focus(); clearTimeout(noteAutoSaveTimer);noteAutoSaveTimer=setTimeout(autoSaveNote,400);
+}
+function jiTag(id){
+  // Use inline tag input instead of prompt
+  const tagsEl=document.getElementById('jt-'+id);if(!tagsEl) return;
+  // Check if inline input already open
+  if(tagsEl.querySelector('.jtag-inp')) return;
+  const entry=journalEntries.find(x=>x.id===id);if(!entry) return;
+
+  const wrap=document.createElement('div');wrap.style.cssText='position:relative;display:inline-flex;align-items:center';
+  const inp=document.createElement('input');inp.className='jtag-inp';
+  inp.placeholder='Add tag…';
+  inp.style.cssText='background:none;border:1px dashed var(--border);border-radius:10px;color:var(--text);font-size:0.65rem;padding:2px 8px;font-family:inherit;outline:none;width:90px';
+  inp.setAttribute('autocomplete','off');
+
+  // Autocomplete from all existing tags
+  const drop=document.createElement('div');
+  drop.style.cssText='position:absolute;top:100%;left:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;max-height:120px;overflow-y:auto;z-index:9999;display:none;box-shadow:0 4px 16px var(--shadow);min-width:120px;margin-top:2px';
+  const showAC=q=>{
+    const allTags=new Set();
+    journalEntries.forEach(e=>(e.tags||[]).forEach(t=>allTags.add(t)));
+    notes.forEach(n=>(n.tags||[]).forEach(t=>allTags.add(t)));
+    const ql=(q||'').toLowerCase();
+    const matches=[...allTags].filter(t=>(!ql||t.startsWith(ql))&&!(entry.tags||[]).includes(t));
+    if(!matches.length){drop.style.display='none';return;}
+    drop.innerHTML='';
+    matches.slice(0,6).forEach(t=>{
+      const r=document.createElement('div');
+      r.style.cssText='padding:5px 10px;cursor:pointer;font-size:0.75rem;color:var(--text2);border-bottom:1px solid var(--border)';
+      r.textContent=t;
+      r.onmousedown=ev2=>{ev2.preventDefault();doAddTag(t);};
+      r.onmouseenter=()=>r.style.background='var(--surface2)';r.onmouseleave=()=>r.style.background='';
+      drop.appendChild(r);
+    });
+    drop.style.display='block';
+  };
+  const doAddTag=t=>{
+    const tag=t.trim().toLowerCase();if(!tag) return;
+    if(!entry.tags) entry.tags=[];
+    if(!entry.tags.includes(tag)){entry.tags.push(tag);}
+    saveJournal();if(fbDb&&currentRoom) fbSaveJournalEntry(entry);
+    tagsEl.innerHTML=renderJTags(entry);
+  };
+  inp.addEventListener('input',()=>showAC(inp.value));
+  inp.addEventListener('focus',()=>showAC(inp.value));
+  inp.addEventListener('blur',()=>setTimeout(()=>{drop.style.display='none';wrap.remove();},150));
+  inp.onkeydown=e=>{
+    if(e.key==='Enter'&&inp.value.trim()){e.preventDefault();doAddTag(inp.value.trim());inp.value='';}
+    if(e.key==='Escape'){e.stopPropagation();inp.blur();}
+  };
+  wrap.appendChild(inp);wrap.appendChild(drop);
+  tagsEl.appendChild(wrap);
+  setTimeout(()=>{inp.focus();showAC('');},30);
+}
+function removeJT(id,tag){
+  const e=journalEntries.find(x=>x.id===id);if(!e) return;
+  e.tags=(e.tags||[]).filter(t=>t!==tag);saveJournal();if(fbDb&&currentRoom) fbSaveJournalEntry(e);
+  const el=document.getElementById('jt-'+id);if(el) el.innerHTML=renderJTags(e);
+}
+function delJE(id){
+  if(!confirm('Delete this journal entry?')) return;
+  const entry=journalEntries.find(e=>e.id===id);
+  journalEntries=journalEntries.filter(e=>e.id!==id);saveJournal();
+  if(fbDb&&currentRoom) fbDeleteJournalEntry(id);
+  // If we were viewing this date in context, stay on that date (now shows "write entry" prompt)
+  renderWsPanel();
+}
+
+// ══════════════════════════════════════════
+// NOTES
+// ══════════════════════════════════════════
+const NOTE_COLORS=[null,'#fbbf24','#f472b6','#4ade80','#60a5fa','#fb923c','#a78bfa'];
+
+function renderNotes(body){
+  body.innerHTML='';
+  const sorted=[...notes.filter(n=>n.pinned),...notes.filter(n=>!n.pinned).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0))];
+  if(!sorted.length){
+    body.innerHTML='<div class="ws-empty">No notes yet.<br><br>Notes are perfect for ideas, references, and anything date-independent.</div>';
+  }
+  const searchRow=document.createElement('div');searchRow.style.marginBottom='8px';
+  searchRow.innerHTML='<input id="note-search" placeholder="🔍 Search notes…" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:8px;font-family:inherit;font-size:0.8rem;outline:none" oninput="renderNoteGrid2(this.value)"/>';
+  body.appendChild(searchRow);
+  const grid=document.createElement('div');grid.className='note-grid';grid.id='notes-grid';body.appendChild(grid);
+  const btn=document.createElement('button');btn.className='journal-new-btn';btn.textContent='+ New Note';btn.onclick=()=>openNoteEditor(null);body.appendChild(btn);
+  renderNoteGrid2('');
+}
+function renderNoteGrid2(q){
+  const grid=document.getElementById('notes-grid');if(!grid) return;
+  const ql=q.toLowerCase();
+  const list=ql?notes.filter(n=>(n.title||'').toLowerCase().includes(ql)||(n.body||'').toLowerCase().includes(ql)):
+    [...notes.filter(n=>n.pinned),...notes.filter(n=>!n.pinned).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0))];
+  grid.innerHTML='';
+  list.forEach(note=>{
+    const card=document.createElement('div');
+    card.className='note-card'+(note.pinned?' pinned':'');
+    if(note.color) card.style.cssText=`border-left:3px solid ${note.color}`;
+    card.innerHTML=`<div class="note-card-header">
+      ${note.color?`<div class="note-color-dot" style="background:${note.color}"></div>`:''}
+      <div class="note-card-title">${escHtml(note.title||'Untitled')}</div>
+      <span class="note-pin" onclick="pinNote(event,'${note.id}')" title="${note.pinned?'Unpin':'Pin'}">${note.pinned?'📌':'📍'}</span>
+    </div>
+    ${note.body?`<div class="note-preview">${escHtml(note.body.slice(0,120))}</div>`:''}
+    <div class="note-meta" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+      <div style="display:flex;gap:3px;flex-wrap:wrap;flex:1">${(note.tags&&note.tags.length)?note.tags.map(t=>`<span style="font-size:0.6rem;padding:1px 6px;border-radius:8px;background:var(--accent-soft);color:var(--accent2)">${escHtml(t)}</span>`).join(''):'<span style="opacity:0">·</span>'}</div>
+      <span style="white-space:nowrap;flex-shrink:0">${timeAgo(note.updatedAt)}</span>
+    </div>`;
+    card.onclick=()=>openNoteEditor(note.id);
+    grid.appendChild(card);
+  });
+}
+function pinNote(e,id){
+  e.stopPropagation();const n=notes.find(x=>x.id===id);
+  if(n){n.pinned=!n.pinned;saveNotes();fbSaveNote(n);renderNoteGrid2(document.getElementById('note-search')?.value||'');}
+}
+function openNoteEditor(id){
+  editingNoteId=id;
+  const note=id?notes.find(n=>n.id===id):null;
+  document.getElementById('note-title-inp').value=note?.title||'';
+  document.getElementById('note-body-inp').value=note?.body||'';
+  selectedNoteColor=note?.color||null;
+  buildNoteColorPick();
+  renderNoteTags(note?.tags||[]);
+  document.getElementById('note-save-status').textContent=note?'Last saved '+timeAgo(note.updatedAt):'New note';
+  document.getElementById('note-overlay').style.display='flex';
+  setTimeout(()=>document.getElementById(note?'note-body-inp':'note-title-inp').focus(),80);
+}
+function renderNoteTags(tags){
+  const row=document.getElementById('note-tags-row');
+  if(!row) return;
+  row.innerHTML='';
+  (tags||[]).forEach(t=>{
+    const span=document.createElement('span');span.className='note-tag';
+    span.textContent=t;span.title='Click to remove';
+    span.onclick=()=>removeNoteTag(t);
+    row.appendChild(span);
+  });
+  // Tag add area
+  const wrap=document.createElement('div');wrap.style.cssText='position:relative;display:inline-flex;align-items:center';
+  const inp=document.createElement('input');
+  inp.placeholder='+ Tag';
+  inp.style.cssText='background:none;border:1px dashed var(--border);border-radius:10px;color:var(--text3);font-size:0.65rem;padding:2px 8px;font-family:inherit;outline:none;width:80px;cursor:pointer';
+  inp.setAttribute('autocomplete','off');
+  // Tag autocomplete
+  const drop=document.createElement('div');
+  drop.style.cssText='position:absolute;top:100%;left:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;max-height:120px;overflow-y:auto;z-index:9999;display:none;box-shadow:0 4px 16px var(--shadow);min-width:120px;margin-top:2px';
+  const showTagAC=q=>{
+    const allTags=new Set();
+    notes.forEach(n=>(n.tags||[]).forEach(t=>allTags.add(t)));
+    journalEntries.forEach(e=>(e.tags||[]).forEach(t=>allTags.add(t)));
+    const ql=q.toLowerCase();
+    const matches=[...allTags].filter(t=>t.startsWith(ql)&&t!==q);
+    if(!matches.length){drop.style.display='none';return;}
+    drop.innerHTML='';
+    matches.slice(0,6).forEach(t=>{
+      const r=document.createElement('div');
+      r.style.cssText='padding:5px 10px;cursor:pointer;font-size:0.75rem;color:var(--text2);border-bottom:1px solid var(--border)';
+      r.textContent=t;
+      r.onmousedown=e2=>{e2.preventDefault();addNoteTag(t);inp.value='';drop.style.display='none';};
+      r.onmouseenter=()=>r.style.background='var(--surface2)';r.onmouseleave=()=>r.style.background='';
+      drop.appendChild(r);
+    });
+    drop.style.display='block';
+  };
+  inp.addEventListener('input',()=>showTagAC(inp.value));
+  inp.addEventListener('blur',()=>setTimeout(()=>{drop.style.display='none';},150));
+  inp.onkeydown=e=>{
+    if(e.key==='Enter'&&inp.value.trim()){e.preventDefault();addNoteTag(inp.value.trim());inp.value='';drop.style.display='none';}
+    if(e.key==='Escape'){e.stopPropagation();inp.value='';drop.style.display='none';inp.blur();}
+  };
+  wrap.appendChild(inp);wrap.appendChild(drop);
+  row.appendChild(wrap);
+}
+function getNoteEditingTags(){
+  const n=notes.find(x=>x.id===editingNoteId);return n?.tags||[];
+}
+function addNoteTag(tag){
+  const t=tag.trim().toLowerCase();if(!t) return;
+  if(!editingNoteId){autoSaveNote();}
+  const n=notes.find(x=>x.id===editingNoteId);
+  if(!n) return;
+  if(!n.tags) n.tags=[];
+  if(!n.tags.includes(t)){n.tags.push(t);saveNotes();fbSaveNote(n);renderNoteTags(n.tags);}
+}
+function removeNoteTag(tag){
+  const n=notes.find(x=>x.id===editingNoteId);if(!n) return;
+  n.tags=(n.tags||[]).filter(t=>t!==tag);saveNotes();fbSaveNote(n);renderNoteTags(n.tags);
+}
+function noteAddTag(){
+  const inp=document.querySelector('#note-tags-row input');if(inp) inp.focus();
+}
+function buildNoteColorPick(){
+  const row=document.getElementById('note-color-pick');
+  row.innerHTML=NOTE_COLORS.map(c=>`<div class="note-color-btn${selectedNoteColor===c?' sel':''}"
+    style="background:${c||'var(--surface3)'}${!c?';border:2px solid var(--border)':''}"
+    onclick="pickNoteColor(${c?`'${c}'`:'null'})" title="${c||'Default'}"></div>`).join('');
+}
+function pickNoteColor(c){selectedNoteColor=c;buildNoteColorPick();autoSaveNote();}
+function autoSaveNote(){
+  const title=document.getElementById('note-title-inp').value;
+  const body=document.getElementById('note-body-inp').value;
+  if(!title.trim()&&!body.trim()) return;
+  if(!editingNoteId){
+    editingNoteId=uuid();
+    notes.unshift({id:editingNoteId,title,body,color:selectedNoteColor,tags:[],pinned:false,createdAt:Date.now(),updatedAt:Date.now()});
+  } else {
+    const n=notes.find(x=>x.id===editingNoteId);
+    if(n){n.title=title;n.body=body;n.color=selectedNoteColor;n.updatedAt=Date.now();}
+    // tags preserved separately via addNoteTag/removeNoteTag
+  }
+  saveNotes();
+  const _n=notes.find(x=>x.id===editingNoteId);if(_n) fbSaveNote(_n);
+  document.getElementById('note-save-status').textContent='Saved just now';
+}
+function handleNoteOverlayClick(e){if(e.target===document.getElementById('note-overlay'))closeNoteEditor();}
+function closeNoteEditor(){
+  autoSaveNote();document.getElementById('note-overlay').style.display='none';
+  editingNoteId=null;if(wsPanelOpen&&wsTab==='notes') renderWsPanel();
+}
+function deleteCurrentNote(){
+  if(!editingNoteId||!confirm('Delete this note?')) return;
+  const _delNoteId=editingNoteId;notes=notes.filter(n=>n.id!==_delNoteId);saveNotes();fbDeleteNote(_delNoteId);
+  document.getElementById('note-overlay').style.display='none';editingNoteId=null;
+  if(wsPanelOpen&&wsTab==='notes') renderWsPanel();
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  ['note-title-inp','note-body-inp'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.addEventListener('input',()=>{clearTimeout(noteAutoSaveTimer);noteAutoSaveTimer=setTimeout(autoSaveNote,600);});
+  });
+});
+
+// ══════════════════════════════════════════
+// TO-DO LISTS
+// ══════════════════════════════════════════
+function renderTodos(body){
+  body.innerHTML='';
+  const fmtDs=ds=>{const d=parseDate(ds);return d?DAYS[d.getDay()]+', '+MONTHS[d.getMonth()].slice(0,3)+' '+d.getDate():ds;};
+
+  // ── DATE CONTEXT: show tasks for that day ──
+  if(wsDateCtx){
+    // Back button
+    const back=document.createElement('button');
+    back.style.cssText='display:flex;align-items:center;gap:5px;width:100%;padding:6px 8px;background:none;border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:inherit;font-size:0.76rem;cursor:pointer;margin-bottom:10px;transition:all 0.12s';
+    back.innerHTML='← All Tasks';
+    back.onmouseenter=()=>back.style.borderColor='var(--accent)';
+    back.onmouseleave=()=>back.style.borderColor='var(--border)';
+    back.onclick=clearWsDateCtx;
+    body.appendChild(back);
+
+    const heading=document.createElement('div');
+    heading.style.cssText='font-size:0.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px';
+    heading.textContent='Tasks for '+fmtDs(wsDateCtx);
+    body.appendChild(heading);
+
+    // Quick-add input (at top) with list autocomplete
+    const quickAdd=buildQuickAddRow(wsDateCtx);
+    body.appendChild(quickAdd);
+
+    if(!todoLists.length){
+      const empty2=document.createElement('div');empty2.className='ws-empty';empty2.style.padding='10px 8px';
+      empty2.textContent='No lists yet — type above and press Enter to create one.';
+      body.appendChild(empty2);return;
+    }
+
+    // Lists WITH tasks for this date
+    let hasActive=false;
+    todoLists.forEach(list=>{
+      const items=(list.items||[]).filter(i=>i.date===wsDateCtx);
+      if(!items.length) return;
+      hasActive=true;
+      const color=list.color||COLORS[0].hex;
+      const sec=buildCollapsibleTodoList(list,items,color,wsDateCtx,true);
+      body.appendChild(sec);
+    });
+
+    if(!hasActive){
+      const empty=document.createElement('div');empty.className='ws-empty';empty.style.padding='10px 8px';
+      empty.textContent='No tasks for this day yet.';body.appendChild(empty);
+    }
+
+    // ── Hidden section: other lists (no tasks this day) ──
+    const listsWithout=todoLists.filter(l=>!(l.items||[]).some(i=>i.date===wsDateCtx));
+    if(listsWithout.length){
+      const toggleId='hidden-lists-'+wsDateCtx.replace(/-/g,'');
+      const toggleBtn=document.createElement('button');
+      toggleBtn.style.cssText='display:flex;align-items:center;gap:5px;width:100%;padding:5px 8px;background:none;border:1px dashed var(--border);border-radius:8px;color:var(--text3);font-family:inherit;font-size:0.73rem;cursor:pointer;margin-top:8px;transition:all 0.12s';
+      toggleBtn.innerHTML='▶ Other lists ('+listsWithout.length+')';
+      toggleBtn.onclick=()=>{
+        const el=document.getElementById(toggleId);
+        const open=el.style.display!=='none';
+        el.style.display=open?'none':'block';
+        toggleBtn.innerHTML=(open?'▶':'▼')+' Other lists ('+listsWithout.length+')';
+      };
+      body.appendChild(toggleBtn);
+      const hiddenSec=document.createElement('div');hiddenSec.id=toggleId;hiddenSec.style.display='none';
+      listsWithout.forEach(list=>{
+        const color=list.color||COLORS[0].hex;
+        // Pass ALL items (all dates) so user can see existing tasks
+        const allItems=list.items||[];
+        const sec=buildCollapsibleTodoList(list,allItems,color,wsDateCtx,false);
+        hiddenSec.appendChild(sec);
+      });
+      body.appendChild(hiddenSec);
+    }
+    return;
+  }
+
+  // ── ALL TASKS MODE ──
+  if(!todoLists.length){
+    body.innerHTML='<div class="ws-empty">No to-do lists yet.<br><br>Create lists to organize tasks by project, category, or date.</div>';
+    const btn=document.createElement('button');btn.className='todo-new-list-btn';btn.textContent='+ New List';
+    btn.onclick=()=>openTodoListModal(null);body.appendChild(btn);return;
+  }
+  const total=todoLists.reduce((s,l)=>(l.items||[]).length+s,0);
+  const done=todoLists.reduce((s,l)=>(l.items||[]).filter(i=>i.done).length+s,0);
+  if(total>0){
+    const bar=document.createElement('div');bar.style.marginBottom='10px';
+    bar.innerHTML=`<div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text2);margin-bottom:4px">
+      <span>${done}/${total} tasks done</span><span>${Math.round(done/total*100)}%</span></div>
+      <div class="todo-progress"><div class="todo-progress-bar" style="width:${Math.round(done/total*100)}%"></div></div>`;
+    body.appendChild(bar);
+  }
+  todoLists.forEach(list=>{
+    const color=list.color||COLORS[0].hex;
+    const sec=buildCollapsibleTodoList(list,list.items||[],color,null,true);
+    body.appendChild(sec);
+  });
+  const btn=document.createElement('button');btn.className='todo-new-list-btn';btn.textContent='+ New List';
+  btn.onclick=()=>openTodoListModal(null);body.appendChild(btn);
+}
+
+// ── Build a collapsible todo list section ──
+function buildCollapsibleTodoList(list,items,color,dateCtx,startExpanded){
+  const sec=document.createElement('div');sec.className='todo-list-section';
+  const done=items.filter(i=>i.done).length;
+  const pct=items.length?Math.round(done/items.length*100):0;
+  const isCollapsed=list._collapsed&&!startExpanded;
+  const hdr=document.createElement('div');hdr.className='todo-list-hdr';
+  hdr.style.cursor='pointer';
+  hdr.innerHTML=`<div class="todo-list-color" style="background:${color}"></div>
+    <div class="todo-list-name">${escHtml(list.name)}</div>
+    <div class="todo-list-count">${done}/${items.length}</div>
+    <span style="font-size:0.7rem;color:var(--text3);margin-right:4px">${isCollapsed?'▶':'▼'}</span>
+    <button class="cal-edit-btn" style="opacity:1;padding:3px 6px" onclick="openTodoListModal('${list.id}');event.stopPropagation()">•••</button>`;
+
+  const bodyEl=document.createElement('div');
+  bodyEl.id='tl-body-'+list.id;
+  bodyEl.style.display=isCollapsed?'none':'block';
+
+  hdr.onclick=(e)=>{
+    if(e.target.closest('.cal-edit-btn')) return;
+    list._collapsed=!list._collapsed;
+    bodyEl.style.display=list._collapsed?'none':'block';
+    const chevron=hdr.querySelector('span');
+    if(chevron) chevron.textContent=list._collapsed?'▶':'▼';
+  };
+
+  // Progress bar
+  if(items.length>0){
+    const prog=document.createElement('div');prog.className='todo-progress';
+    prog.innerHTML=`<div class="todo-progress-bar" style="width:${pct}%"></div>`;
+    bodyEl.appendChild(prog);
+  }
+
+  // Items
+  [...items.filter(i=>!i.done),...items.filter(i=>i.done)].forEach(item=>{
+    bodyEl.appendChild(buildTodoRow(list.id,item,color));
+  });
+
+  // Add row with autocomplete
+  const addRow=document.createElement('div');addRow.className='todo-add-row';addRow.style.position='relative';
+  const addInp=document.createElement('input');
+  addInp.className='todo-add-input';
+  addInp.placeholder='Add task…';
+  addInp.setAttribute('autocomplete','off');
+
+  // Autocomplete dropdown
+  const acDrop=document.createElement('div');
+  acDrop.style.cssText='position:absolute;bottom:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;max-height:140px;overflow-y:auto;z-index:999;display:none;box-shadow:0 4px 16px var(--shadow)';
+
+  const showAC=q=>{
+    if(!q.trim()){acDrop.style.display='none';return;}
+    const ql=q.toLowerCase();
+    // Collect all unique item texts across all lists (deduplicated)
+    const seen=new Set();
+    const suggestions=[];
+    todoLists.forEach(l=>(l.items||[]).forEach(i=>{
+      if(!seen.has(i.text.toLowerCase())&&i.text.toLowerCase().startsWith(ql)){
+        seen.add(i.text.toLowerCase());suggestions.push(i.text);
+      }
+    }));
+    if(!suggestions.length){acDrop.style.display='none';return;}
+    acDrop.innerHTML='';
+    suggestions.slice(0,6).forEach(s=>{
+      const row=document.createElement('div');
+      row.style.cssText='padding:6px 10px;cursor:pointer;font-size:0.8rem;color:var(--text2);border-bottom:1px solid var(--border)';
+      row.textContent=s;
+      row.onmousedown=e=>{e.preventDefault();addInp.value=s;acDrop.style.display='none';addInp.focus();};
+      row.onmouseenter=()=>row.style.background='var(--surface2)';
+      row.onmouseleave=()=>row.style.background='';
+      acDrop.appendChild(row);
+    });
+    acDrop.style.display='block';
+  };
+
+  addInp.addEventListener('input',()=>showAC(addInp.value));
+  addInp.addEventListener('blur',()=>setTimeout(()=>{acDrop.style.display='none';},150));
+
+  const submitTask=()=>{
+    const t=addInp.value.trim();
+    if(!t) return;
+    acDrop.style.display='none';
+    addTodoItem(list.id,t,dateCtx);
+    addInp.value='';
+    addInp.focus();
+  };
+  addInp.onkeydown=e=>{
+    if(e.key==='Enter'){e.preventDefault();e.stopPropagation();submitTask();}
+    if(e.key==='Escape'){e.stopPropagation();addInp.value='';acDrop.style.display='none';addInp.blur();}
+    if(e.key==='ArrowDown'&&acDrop.style.display!=='none'){
+      const first=acDrop.querySelector('div');if(first) first.focus();e.preventDefault();
+    }
+  };
+  const addBtn=document.createElement('button');addBtn.className='todo-add-btn';addBtn.textContent='+';
+  addBtn.onclick=submitTask;
+  addRow.appendChild(acDrop);addRow.appendChild(addInp);addRow.appendChild(addBtn);
+  bodyEl.appendChild(addRow);
+
+  sec.appendChild(hdr);sec.appendChild(bodyEl);
+  return sec;
+}
+
+// ── Quick-add row: suggest list + item autocomplete ──
+function buildQuickAddRow(dateCtx){
+  const wrap=document.createElement('div');
+  wrap.style.cssText='position:relative;margin-bottom:12px';
+
+  const row=document.createElement('div');
+  row.style.cssText='display:flex;gap:6px;align-items:center';
+
+  // List selector
+  const listSel=document.createElement('select');
+  listSel.style.cssText='background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:8px;font-family:inherit;font-size:0.78rem;outline:none;flex-shrink:0;max-width:110px';
+  const newOpt=document.createElement('option');newOpt.value='__new__';newOpt.textContent='+ New list';listSel.appendChild(newOpt);
+  todoLists.forEach(l=>{const o=document.createElement('option');o.value=l.id;o.textContent=l.name;listSel.appendChild(o);});
+  if(todoLists.length) listSel.value=todoLists[0].id;
+
+  // Item input
+  const inp=document.createElement('input');
+  inp.style.cssText='flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:8px;font-family:inherit;font-size:0.82rem;outline:none';
+  inp.placeholder='Add a task…';
+  inp.setAttribute('autocomplete','off');
+
+  // Autocomplete
+  const acDrop=document.createElement('div');
+  acDrop.style.cssText='position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;max-height:140px;overflow-y:auto;z-index:9999;display:none;box-shadow:0 4px 16px var(--shadow);margin-top:2px';
+
+  const showAC=q=>{
+    if(!q.trim()){acDrop.style.display='none';return;}
+    const ql=q.toLowerCase();
+    const seen=new Set();
+    const suggestions=[];
+    todoLists.forEach(l=>(l.items||[]).forEach(i=>{
+      if(!seen.has(i.text.toLowerCase())&&i.text.toLowerCase().startsWith(ql)){
+        seen.add(i.text.toLowerCase());
+        suggestions.push({text:i.text,listName:l.name,listId:l.id});
+      }
+    }));
+    if(!suggestions.length){acDrop.style.display='none';return;}
+    acDrop.innerHTML='';
+    suggestions.slice(0,8).forEach(s=>{
+      const r=document.createElement('div');
+      r.style.cssText='padding:6px 10px;cursor:pointer;font-size:0.8rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center';
+      r.innerHTML=`<span style="color:var(--text)">${escHtml(s.text)}</span><span style="color:var(--text3);font-size:0.7rem">${escHtml(s.listName)}</span>`;
+      r.onmousedown=e=>{
+        e.preventDefault();
+        inp.value=s.text;
+        // Auto-select that list
+        if(listSel.querySelector('option[value="'+s.listId+'"]')) listSel.value=s.listId;
+        acDrop.style.display='none';inp.focus();
+      };
+      r.onmouseenter=()=>r.style.background='var(--surface2)';
+      r.onmouseleave=()=>r.style.background='';
+      acDrop.appendChild(r);
+    });
+    acDrop.style.display='block';
+  };
+
+  inp.addEventListener('input',()=>showAC(inp.value));
+  inp.addEventListener('blur',()=>setTimeout(()=>{acDrop.style.display='none';},150));
+
+  const submit=()=>{
+    const text=inp.value.trim(); if(!text) return;
+    let listId=listSel.value;
+    if(listId==='__new__'){
+      // Create new list named after the task or prompt
+      const listName=prompt('New list name:','My Tasks');
+      if(!listName) return;
+      const newList={id:uuid(),name:listName.trim(),color:COLORS[0].hex,items:[],createdAt:Date.now()};
+      todoLists.push(newList);
+      saveTodoLists();fbSaveTodoList(newList);
+      listId=newList.id;
+      // Add to selector
+      const o=document.createElement('option');o.value=listId;o.textContent=newList.name;
+      listSel.insertBefore(o,listSel.querySelector('option[value="__new__"]').nextSibling);
+      listSel.value=listId;
+    }
+    acDrop.style.display='none';
+    addTodoItem(listId,text,dateCtx);
+    inp.value='';inp.focus();
+  };
+  inp.onkeydown=e=>{
+    if(e.key==='Enter'){e.preventDefault();e.stopPropagation();submit();}
+    if(e.key==='Escape'){e.stopPropagation();inp.value='';acDrop.style.display='none';}
+  };
+
+  const btn=document.createElement('button');
+  btn.className='todo-add-btn';btn.textContent='+';btn.onclick=submit;
+
+  row.appendChild(listSel);row.appendChild(inp);row.appendChild(btn);
+  wrap.appendChild(row);wrap.appendChild(acDrop);
+  return wrap;
+}
+function buildTodoRow(listId,item,color){
+  const row=document.createElement('div');row.className='todo-item';
+  const chk=document.createElement('div');chk.className='todo-check'+(item.done?' done':'');
+  chk.style.borderColor=color;if(item.done) chk.style.background=color;
+  chk.onclick=()=>toggleTodoItem(listId,item.id);
+  const txt=document.createElement('div');txt.className='todo-text'+(item.done?' done':'');
+  txt.textContent=item.text;txt.contentEditable=true;txt.spellcheck=false;txt.style.outline='none';
+  txt.onblur=()=>{const t=txt.textContent.trim();if(t&&t!==item.text) renameTodoItem(listId,item.id,t);};
+  txt.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();txt.blur();}if(e.key==='Escape'){txt.textContent=item.text;txt.blur();}};
+  // Show date badge in all-tasks mode
+  if(item.date && !wsDateCtx){
+    const badge=document.createElement('div');
+    badge.className='todo-due';
+    const d=parseDate(item.date);
+    badge.textContent=d?MONTHS[d.getMonth()].slice(0,3)+' '+d.getDate():'';
+    badge.style.cssText='font-size:0.62rem;color:var(--text3);white-space:nowrap;flex-shrink:0';
+    row.appendChild(chk);row.appendChild(txt);row.appendChild(badge);
+  } else {
+    row.appendChild(chk);row.appendChild(txt);
+  }
+  const del=document.createElement('button');del.className='todo-item-del';del.textContent='✕';del.title='Delete';
+  del.onclick=()=>deleteTodoItem(listId,item.id);
+  row.appendChild(del);
+  return row;
+}
+function addTodoItem(listId,text,date){
+  const l=todoLists.find(x=>x.id===listId);if(!l) return;
+  const item={id:uuid(),text,done:false,createdAt:Date.now()};
+  if(date) item.date=date;
+  (l.items||(l.items=[])).push(item);
+  saveTodoLists();fbSaveTodoList(l);renderWsPanel();
+}
+function toggleTodoItem(listId,itemId){
+  const l=todoLists.find(x=>x.id===listId);if(!l) return;
+  const i=(l.items||[]).find(x=>x.id===itemId);if(!i) return;
+  i.done=!i.done;i.doneAt=i.done?Date.now():null;saveTodoLists();fbSaveTodoList(l);renderWsPanel();
+}
+function renameTodoItem(listId,itemId,text){
+  const l=todoLists.find(x=>x.id===listId);if(!l) return;
+  const i=(l.items||[]).find(x=>x.id===itemId);if(i){i.text=text;saveTodoLists();fbSaveTodoList(l);}
+}
+function deleteTodoItem(listId,itemId){
+  const l=todoLists.find(x=>x.id===listId);if(!l) return;
+  l.items=(l.items||[]).filter(i=>i.id!==itemId);saveTodoLists();fbSaveTodoList(l);renderWsPanel();
+}
+function openTodoListModal(id){
+  editingTodoListId=id;
+  const list=id?todoLists.find(l=>l.id===id):null;
+  document.getElementById('todolist-modal-title').textContent=id?'Edit List':'New List';
+  document.getElementById('tl-name-inp').value=list?.name||'';
+  selectedTlColor=list?.color||COLORS[0].hex;
+  document.getElementById('tl-delete-btn').style.display=id?'':'none';
+  const cp=document.getElementById('tl-color-pick');cp.innerHTML='';
+  COLORS.forEach(c=>{
+    const sw=document.createElement('div');sw.className='color-swatch'+(selectedTlColor===c.hex?' selected':'');
+    sw.style.background=c.hex;
+    sw.onclick=()=>{selectedTlColor=c.hex;cp.querySelectorAll('.color-swatch').forEach(x=>x.classList.remove('selected'));sw.classList.add('selected');};
+    cp.appendChild(sw);
+  });
+  document.getElementById('todolist-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('tl-name-inp').focus(),80);
+}
+function closeTodoListModal(){document.getElementById('todolist-overlay').classList.remove('open');editingTodoListId=null;}
+function saveTodoList(){
+  const name=document.getElementById('tl-name-inp').value.trim();if(!name) return;
+  let _savedTl;
+  if(editingTodoListId){const l=todoLists.find(x=>x.id===editingTodoListId);if(l){l.name=name;l.color=selectedTlColor||COLORS[0].hex;_savedTl=l;}}
+  else{_savedTl={id:uuid(),name,color:selectedTlColor||COLORS[0].hex,items:[],createdAt:Date.now()};todoLists.push(_savedTl);}
+  saveTodoLists();if(_savedTl) fbSaveTodoList(_savedTl);
+  closeTodoListModal();renderWsPanel();
+}
+function deleteTodoList(){
+  if(!editingTodoListId||!confirm('Delete this list and all its tasks?')) return;
+  const _dtlId=editingTodoListId;todoLists=todoLists.filter(l=>l.id!==_dtlId);saveTodoLists();fbDeleteTodoList(_dtlId);closeTodoListModal();renderWsPanel();
+}
+
+// ── Day hover tooltip ──
+let _tooltipEl=null,_tooltipTimer=null;
+function showDayTooltip(date,e){
+  hideDayTooltip();
+  _tooltipTimer=setTimeout(()=>{
+    const dStr=fmtDate(date);
+    const dayEvs=eventsForDate(date);
+    // Todos: items that have this date assigned
+    const allTodos=todoLists.reduce((acc,l)=>{
+      (l.items||[]).filter(i=>i.date===dStr).forEach(i=>acc.push({list:l,item:i}));
+      return acc;
+    },[]);
+
+    if(!dayEvs.length && !allTodos.length) return;
+
+    const tip=document.createElement('div');tip.className='day-tooltip';
+    const fmtDs=`${DAYS[date.getDay()]}, ${MONTHS[date.getMonth()].slice(0,3)} ${date.getDate()}`;
+    tip.innerHTML=`<div class="day-tooltip-date">${fmtDs}</div>`;
+
+    if(dayEvs.length){
+      tip.innerHTML+=`<div class="day-tooltip-section">Events</div>`;
+      dayEvs.slice(0,4).forEach(ev=>{
+        const cal=calendars.find(c=>c.id===(ev.calendarId||'default'));
+        const color=ev.color||(cal?cal.color:COLORS[0].hex);
+        const isAllDay=ev.allDay==='yes'||ev.allDay===true;
+        const time=isAllDay?'All day':fmt12hr(ev.start);
+        tip.innerHTML+=`<div class="day-tooltip-ev"><div class="day-tooltip-dot" style="background:${color}"></div><span>${escHtml(ev.title||'(no title)')}${time?' <span style="color:var(--text3);font-size:0.9em">· '+time+'</span>':''}</span></div>`;
+      });
+      if(dayEvs.length>4) tip.innerHTML+=`<div class="day-tooltip-empty">+${dayEvs.length-4} more</div>`;
+    }
+    if(allTodos.length){
+      tip.innerHTML+=`<div class="day-tooltip-section">Tasks</div>`;
+      allTodos.slice(0,4).forEach(({list,item})=>{
+        tip.innerHTML+=`<div class="day-tooltip-todo"><div class="day-tooltip-dot" style="background:${list.color||COLORS[0].hex}"></div><span${item.done?' style="text-decoration:line-through;opacity:0.5"':''}>${escHtml(item.text)}</span></div>`;
+      });
+      if(allTodos.length>4) tip.innerHTML+=`<div class="day-tooltip-empty">+${allTodos.length-4} more tasks</div>`;
+    }
+
+
+    document.body.appendChild(tip);
+    _tooltipEl=tip;
+    moveDayTooltip(e);
+  },300);
+}
+function moveDayTooltip(e){
+  if(!_tooltipEl) return;
+  const x=Math.min(e.clientX+14, window.innerWidth-270);
+  const y=Math.min(e.clientY+14, window.innerHeight-200);
+  _tooltipEl.style.left=x+'px'; _tooltipEl.style.top=y+'px';
+}
+function hideDayTooltip(){
+  clearTimeout(_tooltipTimer);
+  if(_tooltipEl){_tooltipEl.remove();_tooltipEl=null;}
+}
+
+// ── Utility helpers ──
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function timeAgo(ts){
+  if(!ts) return '';const diff=Date.now()-ts;
+  if(diff<60000) return 'just now';
+  if(diff<3600000) return Math.floor(diff/60000)+'m ago';
+  if(diff<86400000) return Math.floor(diff/3600000)+'h ago';
+  if(diff<604800000) return Math.floor(diff/86400000)+'d ago';
+  return new Date(ts).toLocaleDateString();
+}
+
 
 // ══════════════════════════════════════════
 // FIREBASE
@@ -2705,6 +4313,9 @@ function tryAutoConnect(){
   const cfg=loadFbConfig(); if(!cfg){setSyncStatus('local','Local');return;}
   const ok=initFirebase(cfg); if(!ok) return;
   const savedRoom=loadSavedRoom(); if(savedRoom) attachRoom(savedRoom);
+  // Restore date context from session
+  const savedCtx=loadWsCtx();
+  if(savedCtx){ wsDateCtx=savedCtx; selectedDay=savedCtx; }
 }
 function genRoomCode(){ const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s=''; for(let i=0;i<6;i++) s+=c[Math.floor(Math.random()*c.length)]; return s; }
 function detachListeners(){ syncListeners.forEach(u=>{try{u();}catch(e){}});syncListeners=[]; }
@@ -2723,7 +4334,20 @@ async function attachRoom(code){
   const habUnsub=roomRef.collection('habits').onSnapshot(snap=>{
     habits=[]; snap.forEach(doc=>habits.push({...doc.data(),id:doc.id})); saveHabits(); renderSidebar();
   },()=>{});
-  syncListeners=[evUnsub,lblUnsub,habUnsub]; return true;
+    const jrnUnsub=roomRef.collection('journal').onSnapshot(snap=>{
+    journalEntries=[]; snap.forEach(doc=>journalEntries.push({...doc.data(),id:doc.id}));
+    saveJournal(); if(wsPanelOpen&&wsTab==='journal') renderWsPanel();
+  },()=>{});
+  const notesUnsub=roomRef.collection('notes').onSnapshot(snap=>{
+    notes=[]; snap.forEach(doc=>notes.push({...doc.data(),id:doc.id}));
+    saveNotes(); if(wsPanelOpen&&wsTab==='notes') renderWsPanel();
+  },()=>{});
+  const todosUnsub=roomRef.collection('todoLists').onSnapshot(snap=>{
+    todoLists=[]; snap.forEach(doc=>todoLists.push({...doc.data(),id:doc.id}));
+    saveTodoLists();
+    saveTodoLists(); if(wsPanelOpen&&wsTab==='todos') renderWsPanel();
+  },()=>{});
+  syncListeners=[evUnsub,lblUnsub,habUnsub,jrnUnsub,notesUnsub,todosUnsub]; return true;
 }
 async function fbSaveEvent(ev){ if(!fbDb||!currentRoom) return; try{const d={...ev};delete d.id;await fbDb.collection('rooms').doc(currentRoom).collection('events').doc(ev.id).set(d);}catch(e){} }
 async function fbDeleteEvent(id){ if(!fbDb||!currentRoom) return; try{await fbDb.collection('rooms').doc(currentRoom).collection('events').doc(id).delete();}catch(e){} }
@@ -2732,6 +4356,12 @@ async function fbSaveLabel(lbl){ if(!fbDb||!currentRoom) return; try{const d={..
 async function fbDeleteLabel(id){ if(!fbDb||!currentRoom) return; try{await fbDb.collection('rooms').doc(currentRoom).collection('labels').doc(id).delete();}catch(e){} }
 async function fbSaveHabit(h){ if(!fbDb||!currentRoom) return; try{const d={...h};delete d.id;await fbDb.collection('rooms').doc(currentRoom).collection('habits').doc(h.id).set(d);}catch(e){} }
 async function fbDeleteHabit(id){ if(!fbDb||!currentRoom) return; try{await fbDb.collection('rooms').doc(currentRoom).collection('habits').doc(id).delete();}catch(e){} }
+async function fbSaveJournalEntry(e){ if(!fbDb||!currentRoom) return; try{const d={...e};delete d.id;delete d._collapsed;await fbDb.collection('rooms').doc(currentRoom).collection('journal').doc(e.id).set(d);}catch(err){} }
+async function fbDeleteJournalEntry(id){ if(!fbDb||!currentRoom) return; try{await fbDb.collection('rooms').doc(currentRoom).collection('journal').doc(id).delete();}catch(e){} }
+async function fbSaveNote(n){ if(!fbDb||!currentRoom) return; try{const d={...n};delete d.id;await fbDb.collection('rooms').doc(currentRoom).collection('notes').doc(n.id).set(d);}catch(e){} }
+async function fbDeleteNote(id){ if(!fbDb||!currentRoom) return; try{await fbDb.collection('rooms').doc(currentRoom).collection('notes').doc(id).delete();}catch(e){} }
+async function fbSaveTodoList(l){ if(!fbDb||!currentRoom) return; try{const d={...l};delete d.id;await fbDb.collection('rooms').doc(currentRoom).collection('todoLists').doc(l.id).set(d);}catch(e){} }
+async function fbDeleteTodoList(id){ if(!fbDb||!currentRoom) return; try{await fbDb.collection('rooms').doc(currentRoom).collection('todoLists').doc(id).delete();}catch(e){} }
 function _fbPushEvent(ev){ if(fbDb&&currentRoom) fbSaveEvent(ev); }
 function _fbDeleteEventDoc(id){ if(fbDb&&currentRoom) fbDeleteEvent(id); }
 function _fbPushLabel(lbl){ if(fbDb&&currentRoom) fbSaveLabel(lbl); }
@@ -2795,6 +4425,9 @@ async function createRoom(){
   await fbSaveAllEvents();
   for(const lbl of labels){const d={...lbl};delete d.id;await fbDb.collection('rooms').doc(code).collection('labels').doc(lbl.id).set(d);}
   for(const h of habits){const d={...h};delete d.id;await fbDb.collection('rooms').doc(code).collection('habits').doc(h.id).set(d);}
+  for(const e of journalEntries){const d={...e};delete d.id;delete d._collapsed;await fbDb.collection('rooms').doc(code).collection('journal').doc(e.id).set(d);}
+  for(const n of notes){const d={...n};delete d.id;await fbDb.collection('rooms').doc(code).collection('notes').doc(n.id).set(d);}
+  for(const l of todoLists){const d={...l};delete d.id;await fbDb.collection('rooms').doc(code).collection('todoLists').doc(l.id).set(d);}
   showToast('Room created: '+code+' — share this code!'); updateRoomBadge();
 }
 async function joinRoom(){
