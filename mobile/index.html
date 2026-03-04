@@ -396,7 +396,7 @@ select.form-input option { background:var(--surface2); }
 .btn-leave:hover { background:#f8717120; }
 
 /* ── TOAST ── */
-#toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--surface3); border:1px solid var(--border); color:var(--text); padding:9px 18px; border-radius:10px; font-size:0.8rem; z-index:999; box-shadow:0 8px 24px var(--shadow); opacity:0; transition:opacity 0.3s; pointer-events:none; white-space:nowrap; }
+#toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--surface3); border:1px solid var(--border); color:var(--text); padding:9px 18px; border-radius:10px; font-size:0.8rem; z-index:9001; box-shadow:0 8px 24px var(--shadow); opacity:0; transition:opacity 0.3s; pointer-events:none; white-space:nowrap; }
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width:5px; height:5px; } ::-webkit-scrollbar-track { background:transparent; } ::-webkit-scrollbar-thumb { background:var(--surface3); border-radius:10px; }
@@ -481,7 +481,7 @@ select.form-input option { background:var(--surface2); }
 .ws-close-btn { background:none; border:none; color:var(--text3); cursor:pointer; font-size:1rem; width:24px; height:24px; display:flex; align-items:center; justify-content:center; border-radius:6px; transition:all 0.12s; }
 .ws-close-btn:hover { color:var(--text); background:var(--surface3); }
 .ws-tabs { display:flex; border-bottom:1px solid var(--border); flex-shrink:0; }
-.ws-tab { flex:1; padding:8px 4px; font-size:0.72rem; font-weight:600; text-align:center; cursor:pointer; border:none; background:none; color:var(--text3); font-family:inherit; letter-spacing:0.04em; text-transform:uppercase; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all 0.15s; }
+.ws-tab { flex:1; padding:8px 4px; font-size:0.72rem; font-weight:600; text-align:center; cursor:pointer; border:none; background:none; color:var(--text3); font-family:inherit; letter-spacing:0.04em; text-transform:uppercase; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all 0.15s; touch-action:manipulation; }
 .ws-tab.active { color:var(--accent2); border-bottom-color:var(--accent); }
 .ws-body { flex:1; overflow-y:scroll; padding:12px; display:flex; flex-direction:column; gap:10px; min-height:0; overflow-x:hidden; }
 
@@ -657,7 +657,7 @@ select.form-input option { background:var(--surface2); }
   .ws-panel {
     position:fixed !important;
     inset:auto 0 var(--bnav-h) 0 !important;
-    width:100% !important; height:76dvh !important;
+    width:100% !important; height:82dvh !important;
     border-left:none !important;
     border-top:2px solid var(--border);
     border-radius:18px 18px 0 0;
@@ -665,7 +665,7 @@ select.form-input option { background:var(--surface2); }
     transform:translateY(110%);
     transition:transform 0.32s cubic-bezier(.4,0,.2,1);
     box-shadow:0 -10px 50px var(--shadow);
-    overflow:hidden;
+    overflow:visible;  /* iOS: overflow:hidden on fixed kills child clicks */
     -webkit-overflow-scrolling:touch;
   }
   .ws-panel.open { transform:translateY(0); }
@@ -756,7 +756,10 @@ select.form-input option { background:var(--surface2); }
   .settings-modal { width:100% !important; }
 
   /* Note / Journal editor */
-  .note-edit-overlay { align-items:flex-end; }
+  .note-edit-overlay {
+    align-items:flex-end;
+    z-index:600 !important;  /* above ws-panel(300), mob-nav(400), day-sheet(500) */
+  }
   .note-editor-modal {
     width:100% !important; max-width:100% !important;
     max-height:95dvh; border-radius:20px 20px 0 0 !important; margin:0;
@@ -780,10 +783,42 @@ select.form-input option { background:var(--surface2); }
   .todo-check { width:20px; height:20px; }
   .mood-btn { font-size:1rem !important; padding:5px 7px !important; }
 
+
+  /* ── WS Panel tabs — bigger touch targets on mobile ── */
+  .ws-tabs { gap:4px; padding:6px 10px; background:var(--surface2); border-bottom:1px solid var(--border); }
+  .ws-tab {
+    border-radius:20px !important;
+    padding:9px 4px !important;
+    font-size:0.75rem !important;
+    border-bottom:none !important;
+    margin-bottom:0 !important;
+    background:transparent !important;
+  }
+  .ws-tab.active {
+    background:var(--accent-soft) !important;
+    color:var(--accent2) !important;
+    border-bottom:none !important;
+  }
+  .ws-header { padding:16px 14px 8px !important; }
+  .ws-header-title { font-size:0.95rem !important; }
+  .journal-day-hdr { padding:12px 14px !important; min-height:48px; }
+  .note-card-header { padding:12px 14px 8px !important; min-height:48px; }
+  .todo-list-hdr { padding:12px 14px !important; min-height:48px; }
+  .mob-date-nav { padding:8px 14px !important; }
+  .mob-datenav-btn { width:40px !important; height:40px !important; font-size:1.4rem !important; }
+  .mob-datenav-label { font-size:0.9rem !important; font-weight:700 !important; }
+
   /* Week/Day: allow horizontal scroll */
   .week-view,.day-view { overflow-x:auto; }
   /* ── Scrollable containers — iOS momentum scroll ── */
-  .ws-body { -webkit-overflow-scrolling:touch; overflow-y:auto !important; }
+  .ws-body {
+    -webkit-overflow-scrolling:touch;
+    overflow-y:auto !important;
+    /* clip content to panel's rounded corners since ws-panel no longer clips */
+    border-radius:0 0 0 0;
+  }
+  /* Re-clip rounded corners with a pseudo element wrapper instead */
+  .ws-panel { clip-path:inset(0 0 0 0 round 18px 18px 0 0); }
   .sidebar { -webkit-overflow-scrolling:touch; }
   .week-body,.day-body,.agenda-view,.modal { -webkit-overflow-scrolling:touch; }
 }
@@ -2413,7 +2448,7 @@ function openModal(dateStr,timeStr,endTimeStr){
   populateCalendarDropdown('');
   document.getElementById('modal-actions').innerHTML=`<button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" onclick="saveEvent()">Save Event</button>`;
   document.getElementById('modal-overlay').classList.add('open');
-  setTimeout(()=>document.getElementById('ev-title').focus(),80);
+  if(window.innerWidth>768) setTimeout(()=>document.getElementById('ev-title').focus(),80);
 }
 function openEditModal(id){
   const ev=events.find(e=>e.id===id); if(!ev) return;
@@ -4775,7 +4810,7 @@ scheduleAllReminders();
   <button class="mbn-btn" id="mbn-ws" onclick="mobToggleWs()">
     <span class="ic" id="mbn-ws-ic">📓</span><span id="mbn-ws-lbl">Journal</span>
   </button>
-  <button class="mbn-btn" id="mbn-more" onclick="openSettings()">
+  <button class="mbn-btn" id="mbn-more" onclick="mobMoreTap()">
     <span class="ic">⚙</span><span>More</span>
   </button>
 </nav>
@@ -4872,8 +4907,21 @@ const WS_META = {
 let _wsTab = 'journal';
 
 function mobToggleWs() {
-  if (wsPanelOpen) mobCloseWs();
-  else mobOpenWs(_wsTab);
+  if (wsPanelOpen) {
+    // Tap again: cycle to next tab instead of closing
+    const tabs = ['journal','notes','todos'];
+    const next = tabs[(tabs.indexOf(_wsTab)+1) % tabs.length];
+    _wsTab = next; wsTab = next;
+    document.querySelectorAll('.ws-tab').forEach(t => {
+      t.classList.toggle('active', t.id === 'ws-tab-' + next);
+    });
+    renderWsPanel(); mobUpdateDateNav();
+    const m = WS_META[next] || WS_META.journal;
+    document.getElementById('mbn-ws-ic').textContent  = m.ic;
+    document.getElementById('mbn-ws-lbl').textContent = m.lbl;
+  } else {
+    mobOpenWs(_wsTab);
+  }
 }
 function mobOpenWs(tab) {
   mobCloseTray(); mobCloseSidebar();
@@ -5118,6 +5166,27 @@ function mobJournalNav(dir) {
 
   renderWsPanel();
   mobUpdateDateNav();
+}
+
+
+// ── BUG 4: Settings toggle ──
+function mobMoreTap() {
+  const overlay = document.getElementById('settings-overlay');
+  const btn = document.getElementById('mbn-more');
+  if (overlay && overlay.classList.contains('open')) {
+    if (typeof closeSettings === 'function') closeSettings();
+    btn.classList.remove('on');
+  } else {
+    if (typeof openSettings === 'function') openSettings();
+    btn.classList.add('on');
+  }
+}
+// Patch closeSettings to also clear the btn state
+const _origCloseSettings = typeof closeSettings === 'function' ? closeSettings : null;
+function closeSettings() {
+  if (_origCloseSettings) _origCloseSettings();
+  const btn = document.getElementById('mbn-more');
+  if (btn) btn.classList.remove('on');
 }
 
 // ── Install prompt ──
