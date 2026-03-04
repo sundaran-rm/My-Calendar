@@ -739,9 +739,18 @@ select.form-input option { background:var(--surface2); }
   .overlay { align-items:flex-end; }
   .modal {
     width:100% !important; max-width:100% !important;
-    max-height:94dvh; border-radius:20px 20px 0 0 !important;
-    padding:20px 16px calc(20px + var(--safe-bottom));
+    max-height:92dvh; border-radius:20px 20px 0 0 !important;
+    padding:20px 16px calc(24px + var(--safe-bottom));
     transform:translateY(50px) !important;
+    overflow-y:auto !important;
+    -webkit-overflow-scrolling:touch;
+  }
+  .modal-actions {
+    position:sticky; bottom:0;
+    background:var(--surface);
+    padding:12px 0 0;
+    margin-top:12px;
+    border-top:1px solid var(--border);
   }
   .overlay.open .modal { transform:translateY(0) !important; }
   .settings-modal { width:100% !important; }
@@ -781,6 +790,72 @@ select.form-input option { background:var(--surface2); }
 @media (max-width:380px){
   .month-title { min-width:85px; font-size:0.82rem; }
   .day-cell { min-height:42px; }
+}
+
+/* ── Mobile WS Date Nav ── */
+.mob-date-nav {
+  display:none; /* shown via JS on mobile journal tab */
+  align-items:center; justify-content:space-between;
+  padding:6px 14px; border-bottom:1px solid var(--border);
+  flex-shrink:0; gap:8px; background:var(--surface2);
+}
+.mob-datenav-btn {
+  background:none; border:1px solid var(--border); color:var(--text2);
+  width:32px; height:32px; border-radius:8px; cursor:pointer;
+  font-size:1.3rem; line-height:1; display:flex; align-items:center;
+  justify-content:center; font-family:inherit; flex-shrink:0;
+  touch-action:manipulation; transition:all 0.12s;
+}
+.mob-datenav-btn:active { background:var(--accent-soft); border-color:var(--accent); color:var(--accent2); }
+.mob-datenav-label {
+  font-size:0.82rem; font-weight:600; color:var(--text);
+  flex:1; text-align:center; cursor:pointer;
+}
+.mob-datenav-label:active { color:var(--accent2); }
+
+/* ── Mobile Day Action Sheet ── */
+#mob-day-sheet {
+  display:none; position:fixed; inset:0; z-index:500;
+  background:#00000070; align-items:flex-end;
+}
+#mob-day-sheet.on { display:flex; }
+#mob-day-sheet-inner {
+  background:var(--surface); border-radius:20px 20px 0 0;
+  width:100%; padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));
+  box-shadow:0 -8px 40px var(--shadow);
+}
+.mds-date {
+  font-family:'DM Serif Display',serif; font-size:1.1rem;
+  color:var(--text); margin-bottom:4px; text-align:center;
+}
+.mds-events {
+  max-height:160px; overflow-y:auto; -webkit-overflow-scrolling:touch;
+  margin:8px 0; display:flex; flex-direction:column; gap:4px;
+}
+.mds-ev-row {
+  display:flex; align-items:center; gap:8px; padding:8px 10px;
+  border-radius:9px; background:var(--surface2); cursor:pointer;
+  border-left:3px solid; transition:background 0.12s;
+}
+.mds-ev-row:hover { background:var(--surface3); }
+.mds-ev-title { font-size:0.84rem; font-weight:500; flex:1; }
+.mds-ev-time { font-size:0.72rem; color:var(--text2); }
+.mds-actions { display:flex; gap:8px; margin-top:10px; }
+.mds-btn {
+  flex:1; padding:12px 8px; border-radius:12px; border:none;
+  font-family:inherit; font-size:0.86rem; font-weight:600;
+  cursor:pointer; touch-action:manipulation;
+  transition:all 0.15s;
+}
+.mds-btn-event { background:var(--accent); color:#fff; }
+.mds-btn-event:active { background:var(--accent2); }
+.mds-btn-journal { background:var(--surface2); color:var(--text); border:1px solid var(--border); }
+.mds-btn-journal:active { background:var(--surface3); }
+.mds-close {
+  display:block; width:100%; margin-top:10px; padding:12px;
+  border-radius:12px; border:none; background:var(--surface3);
+  color:var(--text2); font-family:inherit; font-size:0.86rem;
+  font-weight:600; cursor:pointer; touch-action:manipulation;
 }
 </style>
 
@@ -944,6 +1019,12 @@ select.form-input option { background:var(--surface2); }
       <button class="ws-tab active" id="ws-tab-journal" onclick="switchWsTab('journal')">📓 Journal</button>
       <button class="ws-tab" id="ws-tab-notes" onclick="switchWsTab('notes')">📝 Notes</button>
       <button class="ws-tab" id="ws-tab-todos" onclick="switchWsTab('todos')">✅ Todos</button>
+    </div>
+    <!-- Mobile journal date nav — hidden on desktop via CSS -->
+    <div class="mob-date-nav" id="mob-date-nav" style="display:none">
+      <button class="mob-datenav-btn" onclick="mobJournalNav(-1)" title="Previous day">‹</button>
+      <span class="mob-datenav-label" id="mob-datenav-label"></span>
+      <button class="mob-datenav-btn" onclick="mobJournalNav(1)" title="Next day">›</button>
     </div>
     <div class="ws-body" id="ws-body"></div>
   </div>
@@ -1736,7 +1817,9 @@ function buildMonthCell(date,otherMonth){
   }
   // Click to create or open workspace to date
   cell.onclick=()=>{
-    if(wsPanelOpen){
+    if(window.innerWidth <= 768){
+      mobDayTap(dStr, cell);
+    } else if(wsPanelOpen){
       selectedDay=dStr;
       document.querySelectorAll('.day-cell.selected').forEach(c=>c.classList.remove('selected'));
       cell.classList.add('selected');
@@ -4658,6 +4741,19 @@ render();
 scheduleAllReminders();
 </script>
 
+<!-- ── MOBILE DAY ACTION SHEET ── -->
+<div id="mob-day-sheet" onclick="if(event.target===this)mobCloseDaySheet()">
+  <div id="mob-day-sheet-inner">
+    <div class="mds-date" id="mds-date-label"></div>
+    <div class="mds-events" id="mds-events-list"></div>
+    <div class="mds-actions">
+      <button class="mds-btn mds-btn-event" id="mds-btn-event" onclick="mobDayAddEvent()">＋ New Event</button>
+      <button class="mds-btn mds-btn-journal" onclick="mobDayOpenJournal()">📓 Journal</button>
+    </div>
+    <button class="mds-close" onclick="mobCloseDaySheet()">Cancel</button>
+  </div>
+</div>
+
 <!-- ── MOBILE BOTTOM NAV ── -->
 <nav id="mob-nav">
   <!-- View tray (pops up above nav) -->
@@ -4675,7 +4771,7 @@ scheduleAllReminders();
   <button class="mbn-btn" id="mbn-sidebar" onclick="mobToggleSidebar()">
     <span class="ic">☰</span><span>Menu</span>
   </button>
-  <button class="mbn-fab" onclick="openModal()" title="New Event">＋</button>
+  <button class="mbn-fab" onclick="mobFabTap()" title="New Event" id="mbn-fab">＋</button>
   <button class="mbn-btn" id="mbn-ws" onclick="mobToggleWs()">
     <span class="ic" id="mbn-ws-ic">📓</span><span id="mbn-ws-lbl">Journal</span>
   </button>
@@ -4794,6 +4890,7 @@ function mobOpenWs(tab) {
   wsPanelOpen = true;
   document.getElementById('ws-panel').classList.add('open');
   renderWsPanel();
+  mobUpdateDateNav();
   // update bottom btn
   const m = WS_META[_wsTab] || WS_META.journal;
   document.getElementById('mbn-ws-ic').textContent  = m.ic;
@@ -4812,6 +4909,7 @@ function mobCloseWs() {
   document.getElementById('ws-panel').classList.remove('open');
   document.getElementById('mbn-ws').classList.remove('on');
   document.querySelectorAll('.day-cell.selected').forEach(c=>c.classList.remove('selected'));
+  mobUpdateDateNav();
 }
 
 // ── Tab buttons inside WS panel ──
@@ -4824,6 +4922,7 @@ function switchWsTab(tab) {
     const m = WS_META[tab] || WS_META.journal;
     document.getElementById('mbn-ws-ic').textContent  = m.ic;
     document.getElementById('mbn-ws-lbl').textContent = m.lbl;
+    mobUpdateDateNav();
   }
 }
 
@@ -4893,6 +4992,133 @@ document.addEventListener('click', e => {
 
 // Prevent double-tap zoom: use CSS instead of blocking touchend
 // touch-action:manipulation is set on buttons via CSS (no JS preventDefault needed)
+
+
+// ══════════════════════════════════════════
+//  FIX 1: MOBILE DAY ACTION SHEET
+// ══════════════════════════════════════════
+
+let _mobDayDate = null; // currently open day
+
+function mobDayTap(dStr, cell) {
+  _mobDayDate = dStr;
+
+  // Highlight tapped cell
+  document.querySelectorAll('.day-cell.selected').forEach(c => c.classList.remove('selected'));
+  if (cell) cell.classList.add('selected');
+
+  // Populate date label
+  const d = new Date(dStr + 'T00:00:00');
+  const label = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+  document.getElementById('mds-date-label').textContent = label;
+
+  // Populate events list
+  const list = document.getElementById('mds-events-list');
+  list.innerHTML = '';
+  const evs = typeof eventsForDate === 'function' ? eventsForDate(d) : [];
+  if (evs.length === 0) {
+    const em = document.createElement('div');
+    em.style.cssText = 'text-align:center;padding:10px 0;font-size:0.8rem;color:var(--text3)';
+    em.textContent = 'No events';
+    list.appendChild(em);
+  } else {
+    evs.forEach(ev => {
+      const row = document.createElement('div');
+      row.className = 'mds-ev-row';
+      row.style.borderLeftColor = ev.color || 'var(--accent)';
+      const timeStr = ev.allDay ? 'All day' : (ev.start || '');
+      row.innerHTML = `<span class="mds-ev-title">${ev.title||'Untitled'}</span><span class="mds-ev-time">${timeStr}</span>`;
+      row.onclick = () => { mobCloseDaySheet(); openEventPopup(ev.id, dStr); };
+      list.appendChild(row);
+    });
+  }
+
+  // Show sheet
+  document.getElementById('mob-day-sheet').classList.add('on');
+}
+
+function mobCloseDaySheet() {
+  document.getElementById('mob-day-sheet').classList.remove('on');
+  // Remove selection highlight if WS panel not open
+  if (!wsPanelOpen) {
+    document.querySelectorAll('.day-cell.selected').forEach(c => c.classList.remove('selected'));
+  }
+}
+
+function mobDayAddEvent() {
+  const ds = _mobDayDate;
+  mobCloseDaySheet();
+  openModal(ds);
+}
+
+function mobDayOpenJournal() {
+  const ds = _mobDayDate;
+  mobCloseDaySheet();
+  wsDateCtx = ds; selectedDay = ds; saveWsCtx();
+  mobOpenWs('journal');
+}
+
+// open event popup by event id (reuse existing popup logic)
+function openEventPopup(evId, dateStr) {
+  if (typeof showEventPopup === 'function') {
+    showEventPopup(evId, dateStr);
+  } else if (typeof openPopup === 'function') {
+    openPopup(evId, dateStr);
+  }
+}
+
+// ══════════════════════════════════════════
+//  FIX 2: FAB TOGGLE (close modal if open)
+// ══════════════════════════════════════════
+
+function mobFabTap() {
+  const overlay = document.getElementById('modal-overlay');
+  if (overlay && overlay.classList.contains('open')) {
+    // Close the modal if already open
+    if (typeof closeModal === 'function') closeModal();
+  } else {
+    // Close action sheet if open
+    mobCloseDaySheet();
+    openModal(_mobDayDate || null);
+  }
+}
+
+// ══════════════════════════════════════════
+//  FIX 3: JOURNAL DATE NAV
+// ══════════════════════════════════════════
+
+function mobUpdateDateNav() {
+  if (!IS_MOB()) return;
+  const nav = document.getElementById('mob-date-nav');
+  const label = document.getElementById('mob-datenav-label');
+  if (!nav || !label) return;
+
+  const showNav = wsTab === 'journal' && wsPanelOpen;
+  nav.style.display = showNav ? 'flex' : 'none';
+
+  if (showNav) {
+    const ds = wsDateCtx || fmtDate(today);
+    const d = new Date(ds + 'T00:00:00');
+    const isToday = ds === fmtDate(today);
+    label.textContent = isToday ? 'Today' : d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+  }
+}
+
+function mobJournalNav(dir) {
+  const ds = wsDateCtx || fmtDate(today);
+  const d = new Date(ds + 'T00:00:00');
+  d.setDate(d.getDate() + dir);
+  const newDs = fmtDate(d);
+  wsDateCtx = newDs; selectedDay = newDs; saveWsCtx();
+
+  // Update calendar highlight
+  document.querySelectorAll('.day-cell.selected').forEach(c => c.classList.remove('selected'));
+  const cell = document.querySelector('[data-date="' + newDs + '"]');
+  if (cell) cell.classList.add('selected');
+
+  renderWsPanel();
+  mobUpdateDateNav();
+}
 
 // ── Install prompt ──
 let _ip = null;
