@@ -665,8 +665,7 @@ select.form-input option { background:var(--surface2); }
     transform:translateY(110%);
     transition:transform 0.32s cubic-bezier(.4,0,.2,1);
     box-shadow:0 -10px 50px var(--shadow);
-    overflow:visible;  /* iOS: overflow:hidden on fixed kills child clicks */
-    -webkit-overflow-scrolling:touch;
+    overflow:hidden;
   }
   .ws-panel.open { transform:translateY(0); }
   /* drag pill */
@@ -736,33 +735,45 @@ select.form-input option { background:var(--surface2); }
   .mvt-btn.on { border-color:var(--accent); background:var(--accent-soft); color:var(--accent2); }
 
   /* ── MODALS — bottom sheets ── */
-  .overlay { align-items:flex-end; }
+  .overlay {
+    align-items:flex-end;
+    z-index:600 !important;
+    padding-bottom:var(--bnav-h);
+  }
   .modal {
     width:100% !important; max-width:100% !important;
-    max-height:92dvh; border-radius:20px 20px 0 0 !important;
-    padding:20px 16px calc(24px + var(--safe-bottom));
+    max-height:88dvh; border-radius:16px 16px 16px 16px !important;
+    padding:20px 16px 24px;
     transform:translateY(50px) !important;
     overflow-y:auto !important;
     -webkit-overflow-scrolling:touch;
+    box-shadow:0 -8px 40px var(--shadow);
   }
   .modal-actions {
     position:sticky; bottom:0;
     background:var(--surface);
-    padding:12px 0 0;
+    padding:12px 0 4px;
     margin-top:12px;
     border-top:1px solid var(--border);
   }
   .overlay.open .modal { transform:translateY(0) !important; }
-  .settings-modal { width:100% !important; }
+  .settings-modal {
+    width:100% !important;
+    max-height:88dvh !important;
+    overflow-y:auto !important;
+    -webkit-overflow-scrolling:touch;
+  }
 
   /* Note / Journal editor */
   .note-edit-overlay {
     align-items:flex-end;
-    z-index:600 !important;  /* above ws-panel(300), mob-nav(400), day-sheet(500) */
+    z-index:700 !important;  /* above overlays(600) */
+    padding-bottom:0;  /* editor fills full screen, its own close btn handles nav */
   }
   .note-editor-modal {
     width:100% !important; max-width:100% !important;
-    max-height:95dvh; border-radius:20px 20px 0 0 !important; margin:0;
+    max-height:96dvh; border-radius:20px 20px 0 0 !important; margin:0;
+    padding-bottom:calc(env(safe-area-inset-bottom,0px));
   }
 
   /* Event popup — bottom card */
@@ -772,6 +783,9 @@ select.form-input option { background:var(--surface2); }
     bottom:calc(var(--bnav-h) + 8px) !important;
     top:auto !important; width:auto !important;
     border-radius:16px !important;
+    z-index:350 !important;
+    max-height:60dvh; overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
   }
 
   /* Toast above bottom nav */
@@ -785,21 +799,32 @@ select.form-input option { background:var(--surface2); }
 
 
   /* ── WS Panel tabs — bigger touch targets on mobile ── */
-  .ws-tabs { gap:4px; padding:6px 10px; background:var(--surface2); border-bottom:1px solid var(--border); }
+  .ws-tabs {
+    gap:4px; padding:6px 10px;
+    background:var(--surface2); border-bottom:1px solid var(--border);
+    flex-shrink:0; position:relative; z-index:2;  /* ensure tappable above ws-body */
+    pointer-events:all;
+  }
   .ws-tab {
     border-radius:20px !important;
-    padding:9px 4px !important;
-    font-size:0.75rem !important;
+    padding:10px 6px !important;
+    font-size:0.76rem !important;
     border-bottom:none !important;
     margin-bottom:0 !important;
     background:transparent !important;
+    pointer-events:all !important;
+    touch-action:manipulation !important;
+    position:relative; z-index:2;
   }
   .ws-tab.active {
     background:var(--accent-soft) !important;
     color:var(--accent2) !important;
     border-bottom:none !important;
   }
-  .ws-header { padding:16px 14px 8px !important; }
+  .ws-header {
+    padding:16px 14px 8px !important;
+    flex-shrink:0; position:relative; z-index:2; pointer-events:all;
+  }
   .ws-header-title { font-size:0.95rem !important; }
   .journal-day-hdr { padding:12px 14px !important; min-height:48px; }
   .note-card-header { padding:12px 14px 8px !important; min-height:48px; }
@@ -814,11 +839,8 @@ select.form-input option { background:var(--surface2); }
   .ws-body {
     -webkit-overflow-scrolling:touch;
     overflow-y:auto !important;
-    /* clip content to panel's rounded corners since ws-panel no longer clips */
-    border-radius:0 0 0 0;
   }
-  /* Re-clip rounded corners with a pseudo element wrapper instead */
-  .ws-panel { clip-path:inset(0 0 0 0 round 18px 18px 0 0); }
+  /* clip-path removed — overflow:hidden handles border-radius clipping correctly */
   .sidebar { -webkit-overflow-scrolling:touch; }
   .week-body,.day-body,.agenda-view,.modal { -webkit-overflow-scrolling:touch; }
 }
@@ -1344,7 +1366,7 @@ select.form-input option { background:var(--surface2); }
 </div>
 
 <!-- ── SETTINGS MODAL ── -->
-<div class="overlay" id="settings-overlay" onclick="if(event.target===this)closeSettings()">
+<div class="overlay" id="settings-overlay" onclick="if(event.target===this){ closeSettings(); document.getElementById('mbn-more').classList.remove('on'); }">
   <div class="modal settings-modal">
     <div class="modal-title">Settings</div>
 
@@ -5005,16 +5027,39 @@ function toggleSidebar() {
 function initMobile() {
   if (!IS_MOB()) return;
 
-  // mob-nav shown via CSS @media — just sync view tray state
   mobSyncViewTray();
 
-  // On mobile: always close panels that desktop auto-opened
+  // On mobile: close any desktop-auto-opened panels
   if (wsPanelOpen) {
     wsPanelOpen = false;
     document.getElementById('ws-panel').classList.remove('open');
   }
-  // Make sure sidebar is not in collapsed state visually on mobile
   document.getElementById('sidebar').classList.remove('collapsed');
+
+  // Samsung Chrome fix: attach touchend (not just click) to ws-tabs
+  // so tab switching works on first tap inside fixed panels
+  document.querySelectorAll('.ws-tab').forEach(btn => {
+    btn.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const tab = this.id.replace('ws-tab-', '');
+      if (tab) switchWsTab(tab);
+    }, { passive: false });
+  });
+
+  // Same for ws-close-btn and ws-add-btn inside ws-panel
+  const closeBtn = document.querySelector('.ws-panel .ws-close-btn');
+  if (closeBtn) {
+    closeBtn.addEventListener('touchend', function(e) {
+      e.preventDefault(); mobCloseWs();
+    }, { passive: false });
+  }
+  const addBtn = document.getElementById('ws-add-btn');
+  if (addBtn) {
+    addBtn.addEventListener('touchend', function(e) {
+      e.preventDefault(); wsNewItem();
+    }, { passive: false });
+  }
 }
 
 // Run immediately on DOMContentLoaded (before tryAutoConnect 250ms delay)
@@ -5169,19 +5214,27 @@ function mobJournalNav(dir) {
 }
 
 
-// ── BUG 4: Settings toggle ──
+// ── More/Settings toggle ──
 function mobMoreTap() {
   const overlay = document.getElementById('settings-overlay');
   const btn = document.getElementById('mbn-more');
-  if (overlay && overlay.classList.contains('open')) {
-    if (typeof closeSettings === 'function') closeSettings();
-    btn.classList.remove('on');
+  const isOpen = overlay && overlay.classList.contains('open');
+  if (isOpen) {
+    mobCloseSettings();
   } else {
+    // Close any other open panels first
+    mobCloseDaySheet();
     if (typeof openSettings === 'function') openSettings();
-    btn.classList.add('on');
+    if (btn) btn.classList.add('on');
   }
 }
-// Patch closeSettings to also clear the btn state
+function mobCloseSettings() {
+  const overlay = document.getElementById('settings-overlay');
+  if (overlay) overlay.classList.remove('open');
+  const btn = document.getElementById('mbn-more');
+  if (btn) btn.classList.remove('on');
+}
+// Hook into all closeSettings calls to keep btn state in sync
 const _origCloseSettings = typeof closeSettings === 'function' ? closeSettings : null;
 function closeSettings() {
   if (_origCloseSettings) _origCloseSettings();
