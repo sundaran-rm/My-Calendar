@@ -800,26 +800,30 @@ select.form-input option { background:var(--surface2); }
 
   /* ── WS Panel tabs — bigger touch targets on mobile ── */
   .ws-tabs {
-    gap:4px; padding:6px 10px;
+    gap:6px; padding:8px 12px;
     background:var(--surface2); border-bottom:1px solid var(--border);
-    flex-shrink:0; position:relative; z-index:2;  /* ensure tappable above ws-body */
+    flex-shrink:0; position:relative; z-index:2;
     pointer-events:all;
   }
   .ws-tab {
-    border-radius:20px !important;
-    padding:10px 6px !important;
-    font-size:0.76rem !important;
+    border-radius:22px !important;
+    padding:11px 8px !important;
+    font-size:0.78rem !important;
     border-bottom:none !important;
     margin-bottom:0 !important;
-    background:transparent !important;
+    background:var(--surface3) !important;
+    color:var(--text2) !important;
     pointer-events:all !important;
     touch-action:manipulation !important;
     position:relative; z-index:2;
+    user-select:none;
+    transition:background 0.12s, color 0.12s !important;
   }
   .ws-tab.active {
-    background:var(--accent-soft) !important;
-    color:var(--accent2) !important;
+    background:var(--accent) !important;
+    color:#fff !important;
     border-bottom:none !important;
+    font-weight:700 !important;
   }
   .ws-header {
     padding:16px 14px 8px !important;
@@ -1401,9 +1405,6 @@ select.form-input option { background:var(--surface2); }
       </div>
     </div>
 
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeSettings()">Close</button>
-    </div>
   </div>
 </div>
 
@@ -5036,30 +5037,43 @@ function initMobile() {
   }
   document.getElementById('sidebar').classList.remove('collapsed');
 
-  // Samsung Chrome fix: attach touchend (not just click) to ws-tabs
-  // so tab switching works on first tap inside fixed panels
+  // Use pointerdown on ws-tabs — fires immediately, works on Samsung Chrome
+  // inside position:fixed containers without the 300ms delay or suppression
   document.querySelectorAll('.ws-tab').forEach(btn => {
-    btn.addEventListener('touchend', function(e) {
+    btn.addEventListener('pointerdown', function(e) {
       e.preventDefault();
-      e.stopPropagation();
       const tab = this.id.replace('ws-tab-', '');
-      if (tab) switchWsTab(tab);
-    }, { passive: false });
+      if (tab) {
+        // Visual feedback
+        this.style.opacity = '0.7';
+        setTimeout(() => this.style.opacity = '', 150);
+        switchWsTab(tab);
+      }
+    });
   });
 
-  // Same for ws-close-btn and ws-add-btn inside ws-panel
+  // ws-close btn
   const closeBtn = document.querySelector('.ws-panel .ws-close-btn');
   if (closeBtn) {
-    closeBtn.addEventListener('touchend', function(e) {
+    closeBtn.addEventListener('pointerdown', function(e) {
       e.preventDefault(); mobCloseWs();
-    }, { passive: false });
+    });
   }
+  // ws-add btn
   const addBtn = document.getElementById('ws-add-btn');
   if (addBtn) {
-    addBtn.addEventListener('touchend', function(e) {
+    addBtn.addEventListener('pointerdown', function(e) {
       e.preventDefault(); wsNewItem();
-    }, { passive: false });
+    });
   }
+  // mob-date-nav arrows
+  document.querySelectorAll('.mob-datenav-btn').forEach(btn => {
+    btn.addEventListener('pointerdown', function(e) {
+      e.preventDefault();
+      const dir = this.getAttribute('onclick').includes('-1') ? -1 : 1;
+      mobJournalNav(dir);
+    });
+  });
 }
 
 // Run immediately on DOMContentLoaded (before tryAutoConnect 250ms delay)
@@ -5240,6 +5254,95 @@ function closeSettings() {
   if (_origCloseSettings) _origCloseSettings();
   const btn = document.getElementById('mbn-more');
   if (btn) btn.classList.remove('on');
+}
+
+
+// ════════════════════════════════════════════════════════
+//  ANDROID BACK BUTTON — popstate = Escape key
+// ════════════════════════════════════════════════════════
+
+// Push a history entry whenever something opens on mobile
+// so the Android back button triggers popstate to close it
+function mobPushState(tag) {
+  if (!IS_MOB()) return;
+  history.pushState({ mob: tag }, '');
+}
+
+// Handle back button (popstate)
+window.addEventListener('popstate', function(e) {
+  if (!IS_MOB()) return;
+
+  // Dispatch in priority order (highest to lowest):
+  // 1. Journal editor overlay
+  const je = document.getElementById('journal-overlay');
+  if (je && je.style.display === 'flex') {
+    closeJournalEditor(); return;
+  }
+  // 2. Note editor overlay
+  const ne = document.getElementById('note-overlay');
+  if (ne && ne.style.display !== 'none') {
+    closeNoteEditor(); return;
+  }
+  // 3. Any .overlay that's open (settings, event modal, etc.)
+  const overlays = [
+    'modal-overlay','settings-overlay','todolist-overlay',
+    'copy-overlay','del-overlay','label-overlay','cal-overlay',
+    'habit-overlay','room-overlay','fb-setup-overlay','import-overlay',
+  ];
+  for (const id of overlays) {
+    const el = document.getElementById(id);
+    if (el && el.classList.contains('open')) {
+      // close it via the same function as Escape
+      if (id === 'modal-overlay')      { closeModal(); return; }
+      if (id === 'settings-overlay')   { closeSettings(); document.getElementById('mbn-more').classList.remove('on'); return; }
+      if (id === 'todolist-overlay')   { closeTodoListModal(); return; }
+      if (id === 'copy-overlay')       { closeCopyModal(); return; }
+      if (id === 'del-overlay')        { closeDelDialog && closeDelDialog(); return; }
+      if (id === 'label-overlay')      { closeLabelModal(); return; }
+      if (id === 'cal-overlay')        { closeCalModal(); return; }
+      if (id === 'habit-overlay')      { closeHabitModal(); return; }
+      if (id === 'room-overlay')       { closeRoomModal(); return; }
+      if (id === 'fb-setup-overlay')   { closeFbSetup(); return; }
+      if (id === 'import-overlay')     { closeImportModal && closeImportModal(); return; }
+    }
+  }
+  // 4. Day action sheet
+  const ds = document.getElementById('mob-day-sheet');
+  if (ds && ds.classList.contains('on')) {
+    mobCloseDaySheet(); return;
+  }
+  // 5. View tray
+  if (_viewTrayOpen) { mobCloseTray(); return; }
+  // 6. Sidebar drawer
+  if (_sidebarOpen) { mobCloseSidebar(); return; }
+  // 7. WS panel (journal/notes/todos)
+  if (wsPanelOpen) { mobCloseWs(); return; }
+  // 8. Nothing open — let default happen (exits to home screen, that's fine)
+});
+
+// Push state whenever something opens on mobile
+// We hook into the open functions:
+const _origOpenModal_back = typeof openModal === 'function' ? openModal : null;
+function openModal(a,b,c) {
+  if (_origOpenModal_back) _origOpenModal_back(a,b,c);
+  mobPushState('modal');
+}
+const _origOpenSettings_back = typeof openSettings === 'function' ? openSettings : null;
+function openSettings(a) {
+  if (_origOpenSettings_back) _origOpenSettings_back(a);
+  mobPushState('settings');
+}
+// mobOpenWs already exists — patch it to push state
+const _origMobOpenWs = mobOpenWs;
+function mobOpenWs(tab) {
+  _origMobOpenWs(tab);
+  mobPushState('ws');
+}
+// mobOpenSidebar — patch
+const _origMobOpenSidebar = mobOpenSidebar;
+function mobOpenSidebar() {
+  _origMobOpenSidebar();
+  mobPushState('sidebar');
 }
 
 // ── Install prompt ──
