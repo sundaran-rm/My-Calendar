@@ -1132,9 +1132,9 @@ select.form-input option { background:var(--surface2); }
     </div>
     <!-- Mobile journal date nav — hidden on desktop via CSS -->
     <div class="mob-date-nav" id="mob-date-nav" style="display:none">
-      <button class="mob-datenav-btn" onclick="mobJournalNav(-1)" title="Previous day">‹</button>
+      <button class="mob-datenav-btn" data-dir="-1" onclick="mobJournalNav(-1)" title="Previous day">‹</button>
       <span class="mob-datenav-label" id="mob-datenav-label"></span>
-      <button class="mob-datenav-btn" onclick="mobJournalNav(1)" title="Next day">›</button>
+      <button class="mob-datenav-btn" data-dir="1" onclick="mobJournalNav(1)" title="Next day">›</button>
     </div>
     <div class="ws-body" id="ws-body"></div>
   </div>
@@ -4994,7 +4994,10 @@ function mobToggleWs() {
     const m = WS_META[next] || WS_META.journal;
     document.getElementById('mbn-ws-ic').textContent  = m.ic;
     document.getElementById('mbn-ws-lbl').textContent = m.lbl;
+    // Push state so back button works after cycling
+    mobPushState('ws');
   } else {
+    mobCloseDaySheet();  // close sheet if open before opening panel
     mobOpenWs(_wsTab);
   }
 }
@@ -5096,8 +5099,12 @@ function initMobile() {
   // Use pointerdown on ws-tabs — fires immediately, works on Samsung Chrome
   // inside position:fixed containers without the 300ms delay or suppression
   document.querySelectorAll('.ws-tab').forEach(btn => {
+    let _tabHandled = false;
     btn.addEventListener('pointerdown', function(e) {
       e.preventDefault();
+      if (_tabHandled) return;
+      _tabHandled = true;
+      setTimeout(() => { _tabHandled = false; }, 400);
       const tab = this.id.replace('ws-tab-', '');
       if (tab) {
         // Visual feedback
@@ -5126,7 +5133,7 @@ function initMobile() {
   document.querySelectorAll('.mob-datenav-btn').forEach(btn => {
     btn.addEventListener('pointerdown', function(e) {
       e.preventDefault();
-      const dir = this.getAttribute('onclick').includes('-1') ? -1 : 1;
+      const dir = parseInt(this.dataset.dir || '1', 10);
       mobJournalNav(dir);
     });
   });
@@ -5191,13 +5198,14 @@ function mobDayTap(dStr, cell) {
       row.style.borderLeftColor = ev.color || 'var(--accent)';
       const timeStr = ev.allDay ? 'All day' : (ev.start || '');
       row.innerHTML = `<span class="mds-ev-title">${ev.title||'Untitled'}</span><span class="mds-ev-time">${timeStr}</span>`;
-      row.onclick = () => { mobCloseDaySheet(); openEventPopup(ev.id, dStr); };
+      row.onclick = () => { mobCloseDaySheet(); setTimeout(() => openEventPopup(ev.id, dStr), 50); };
       list.appendChild(row);
     });
   }
 
   // Show sheet
   document.getElementById('mob-day-sheet').classList.add('on');
+  mobPushState('day-sheet');  // back button will close it
 }
 
 function mobCloseDaySheet() {
@@ -5223,11 +5231,13 @@ function mobDayOpenJournal() {
 
 // open event popup by event id (reuse existing popup logic)
 function openEventPopup(evId, dateStr) {
-  if (typeof showEventPopup === 'function') {
-    showEventPopup(evId, dateStr);
-  } else if (typeof openPopup === 'function') {
-    openPopup(evId, dateStr);
-  }
+  // s0 uses showPopup(id, date, mouseEvent).
+  // On mobile the popup is a bottom card (CSS), so position is irrelevant —
+  // pass a centered fake event so showPopup doesn't error.
+  if (typeof showPopup !== 'function') return;
+  const date = dateStr ? new Date(dateStr + 'T00:00:00') : new Date();
+  const fakeEv = { clientX: window.innerWidth / 2, clientY: window.innerHeight / 3 };
+  showPopup(evId, date, fakeEv);
 }
 
 // ══════════════════════════════════════════
