@@ -105,10 +105,12 @@ function mobToggleWs() {
 
     if (isWsOpen) {
         ws.classList.add('active');
+        ws.classList.add('open'); // Consistency with desktop
         if (mbnWs) mbnWs.classList.add('active');
         toggleMobScrim(true);
     } else {
         ws.classList.remove('active');
+        ws.classList.remove('open');
         if (mbnWs) mbnWs.classList.remove('active');
         if (!isSidebarOpen && !isDaySheetOpen) toggleMobScrim(false);
     }
@@ -119,7 +121,14 @@ function mobFabTap() {
 }
 
 function mobMoreTap() {
-    if (typeof openSettings === 'function') openSettings();
+    const mbnMore = getEl('mbn-more');
+    if (mbnMore && mbnMore.classList.contains('on')) {
+        if (typeof closeSettings === 'function') closeSettings();
+        mbnMore.classList.remove('on');
+    } else {
+        if (typeof openSettings === 'function') openSettings();
+        if (mbnMore) mbnMore.classList.add('on');
+    }
 }
 
 function mobCloseDaySheet() {

@@ -12,6 +12,10 @@
   <meta name="theme-color" content="#18181c">
   <meta name="description" content="Offline-first calendar with journal, notes, todos, habits, Firebase sync.">
   <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
+  <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
   <title>CalIO</title>
@@ -561,6 +565,12 @@
         </div>
       </div>
 
+      <!-- Mobile Close Button for Settings -->
+      <div class="modal-actions" style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
+        <button class="btn-save" id="settings-done-btn" style="width: 100%;"
+          onclick="closeSettings(); document.getElementById('mbn-more').classList.remove('on');">Done</button>
+      </div>
+
     </div>
   </div>
 
@@ -739,15 +749,16 @@
   </div>
 
   <!-- ── MOBILE BOTTOM NAV ── -->
+  <!-- View tray (pops up above nav) -->
+  <div id="mob-view-tray">
+    <button class="mvt-btn" id="mvt-month" onclick="mobView('month')">Month</button>
+    <button class="mvt-btn" id="mvt-week" onclick="mobView('week')">Week</button>
+    <button class="mvt-btn" id="mvt-day" onclick="mobView('day')">Day</button>
+    <button class="mvt-btn" id="mvt-year" onclick="mobView('year')">Year</button>
+    <button class="mvt-btn" id="mvt-agenda" onclick="mobView('agenda')">Agenda</button>
+  </div>
+
   <nav id="mob-nav">
-    <!-- View tray (pops up above nav) -->
-    <div id="mob-view-tray">
-      <button class="mvt-btn" id="mvt-month" onclick="mobView('month')">Month</button>
-      <button class="mvt-btn" id="mvt-week" onclick="mobView('week')">Week</button>
-      <button class="mvt-btn" id="mvt-day" onclick="mobView('day')">Day</button>
-      <button class="mvt-btn" id="mvt-year" onclick="mobView('year')">Year</button>
-      <button class="mvt-btn" id="mvt-agenda" onclick="mobView('agenda')">Agenda</button>
-    </div>
 
     <button class="mbn-btn" id="mbn-views" onclick="mobToggleViews()">
       <span class="ic">📆</span><span>Views</span>

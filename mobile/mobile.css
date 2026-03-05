@@ -3,370 +3,412 @@
    ========================================================= */
 
 @media (max-width: 768px) {
-  /* Hide Desktop Nav and Sidebar by Default */
-  #main-nav {
-    display: none !important;
-  }
 
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: -100%; /* Hidden off-screen */
-    width: 80% !important;
-    max-width: 320px;
-    height: 100vh;
-    z-index: 9999; /* Above everything */
-    background: var(--surface) !important;
-    transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-    border-right: none;
-    box-shadow: 5px 0 25px rgba(0,0,0,0.5);
-    padding-bottom: 80px; /* Space for bottom nav */
-  }
+    /* Hide Desktop Nav and Sidebar by Default */
+    #main-nav {
+        display: none !important;
+    }
 
-  .sidebar.mob-open {
-    left: 0;
-  }
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        /* Hidden off-screen */
+        width: 80% !important;
+        max-width: 320px;
+        height: 100vh;
+        z-index: 10015 !important;
+        /* Above everything including scrim */
+        background: var(--surface) !important;
+        transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        border-right: none;
+        box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
+        padding-bottom: 80px;
+        /* Space for bottom nav */
+        transform: none !important;
+    }
 
-  /* Scrim for Modals / Sidebar */
-  #mob-scrim {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(4px);
-    z-index: 9998;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  #mob-scrim.visible {
-    display: block;
-    opacity: 1;
-  }
+    .sidebar.mob-open {
+        left: 0;
+    }
 
-  /* Core Layout Adjustment for Mobile */
-  body {
-    padding-bottom: 70px; /* Space for Mobile Bottom Nav */
-    height: 100vh;
-    height: 100dvh; /* Dynamic viewport height */
-  }
+    /* Scrim for Modals / Sidebar */
+    #mob-scrim {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 10005 !important;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
 
-  .main {
-    flex-direction: column;
-    height: 100%;
-  }
+    #mob-scrim.visible {
+        display: block;
+        opacity: 1;
+    }
 
-  /* Mobile Bottom Navigation (Glassmorphism) */
-  #mob-nav {
-    display: flex !important;
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    height: 70px;
-    padding-bottom: env(safe-area-inset-bottom);
-    background: rgba(24, 24, 28, 0.75);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(255,255,255,0.08);
-    z-index: 1000;
-    justify-content: space-around;
-    align-items: center;
-    box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
-  }
+    /* Core Layout Adjustment for Mobile */
+    body {
+        padding-bottom: 70px;
+        /* Space for Mobile Bottom Nav */
+        height: 100vh;
+        height: 100dvh;
+        /* Dynamic viewport height */
+    }
 
-  [data-theme="light"] #mob-nav {
-    background: rgba(255, 255, 255, 0.85);
-    border-top: 1px solid rgba(0,0,0,0.05);
-    box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
-  }
+    .main {
+        flex-direction: column;
+        height: 100%;
+    }
 
-  .mbn-btn {
-    background: none;
-    border: none;
-    color: var(--text3);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.65rem;
-    font-weight: 500;
-    gap: 3px;
-    flex: 1;
-    height: 100%;
-    cursor: pointer;
-    transition: color 0.2s, transform 0.2s;
-  }
+    /* Mobile Bottom Navigation (Glassmorphism) */
+    #mob-nav {
+        display: flex !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 70px;
+        padding-bottom: env(safe-area-inset-bottom);
+        background: rgba(24, 24, 28, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        z-index: 1000;
+        justify-content: space-around;
+        align-items: center;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+        overflow: visible !important;
+        /* Ensure tray isn't clipped out */
+    }
 
-  .mbn-btn .ic {
-    font-size: 1.3rem;
-    margin-bottom: 2px;
-  }
+    [data-theme="light"] #mob-nav {
+        background: rgba(255, 255, 255, 0.85);
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+    }
 
-  .mbn-btn:active {
-    transform: scale(0.9);
-  }
+    .mbn-btn {
+        background: none;
+        border: none;
+        color: var(--text3);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65rem;
+        font-weight: 500;
+        gap: 3px;
+        flex: 1;
+        height: 100%;
+        cursor: pointer;
+        transition: color 0.2s, transform 0.2s;
+    }
 
-  .mbn-btn.active {
-    color: var(--accent);
-  }
+    .mbn-btn .ic {
+        font-size: 1.3rem;
+        margin-bottom: 2px;
+    }
 
-  .mbn-btn.on {
-    color: var(--accent2);
-  }
+    .mbn-btn:active {
+        transform: scale(0.9);
+    }
 
-  /* FAB (Floating Action Button) Center */
-  .mbn-fab {
-    background: linear-gradient(135deg, var(--accent2), var(--accent));
-    color: #fff;
-    border: none;
-    width: 54px;
-    height: 54px;
-    border-radius: 50%;
-    font-size: 2rem;
-    font-weight: 300;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: -30px;
-    box-shadow: 0 10px 25px var(--accent-soft);
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
+    .mbn-btn.active {
+        color: var(--accent);
+    }
 
-  .mbn-fab:active {
-    transform: scale(0.9) translateY(4px);
-    box-shadow: 0 5px 15px var(--accent-soft);
-  }
+    .mbn-btn.on {
+        color: var(--accent2);
+    }
 
-  /* Mobile View Tray (Pops up above Views button) */
-  #mob-view-tray {
-    display: none;
-    position: absolute;
-    bottom: 80px; /* Above nav */
-    left: 10px;
-    background: var(--surface2);
-    border-radius: 16px;
-    padding: 8px;
-    flex-direction: column;
-    gap: 4px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    border: 1px solid var(--border);
-    animation: slideUpFade 0.2s ease-out forwards;
-    z-index: 1001;
-  }
+    /* FAB (Floating Action Button) Center */
+    .mbn-fab {
+        background: linear-gradient(135deg, var(--accent2), var(--accent));
+        color: #fff;
+        border: none;
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        font-size: 2rem;
+        font-weight: 300;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -30px;
+        box-shadow: 0 10px 25px var(--accent-soft);
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
 
-  #mob-view-tray.show {
-    display: flex !important;
-  }
+    .mbn-fab:active {
+        transform: scale(0.9) translateY(4px);
+        box-shadow: 0 5px 15px var(--accent-soft);
+    }
 
-  .mvt-btn {
-    background: none;
-    border: none;
-    color: var(--text);
-    padding: 12px 24px;
-    text-align: left;
-    border-radius: 10px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    transition: background 0.15s;
-  }
+    /* Mobile View Tray (Pops up above Views button) */
+    #mob-view-tray {
+        display: none;
+        position: absolute;
+        bottom: 80px;
+        /* Above nav */
+        left: 10px;
+        width: calc(100% - 20px);
+        max-width: 280px;
+        background: var(--surface2);
+        border-radius: 16px;
+        padding: 8px;
+        flex-direction: column;
+        gap: 4px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--border);
+        animation: slideUpFade 0.2s ease-out forwards;
+        z-index: 10005;
+        /* Must sit above everything else */
+    }
 
-  .mvt-btn:active {
-    background: var(--surface3);
-  }
+    #mob-view-tray.show {
+        display: flex !important;
+    }
 
-  .mvt-btn.active {
-    background: var(--accent-soft);
-    color: var(--accent2);
-  }
+    .mvt-btn {
+        background: none;
+        border: none;
+        color: var(--text);
+        padding: 12px 24px;
+        text-align: left;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: background 0.15s;
+    }
 
-  /* Workspace Panel (Journal / Notes) */
-  .ws-panel {
-    position: fixed;
-    top: 100vh; /* Hidden below screen */
-    bottom: 0px !important; 
-    right: 0px !important;
-    left: 0px !important;
-    width: 100% !important;
-    min-height: calc(100vh - 70px) !important;
-    border-left: none;
-    border-top: 1px solid var(--border);
-    border-radius: 20px 20px 0 0;
-    box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
-    z-index: 9900;
-    transition: top 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  }
+    .mvt-btn:active {
+        background: var(--surface3);
+    }
 
-  .ws-panel.active {
-    top: 5dvh !important; /* Slide up, leaving 5% margin */
-  }
+    .mvt-btn.active {
+        background: var(--accent-soft);
+        color: var(--accent2);
+    }
 
-  /* Mobile Date Nav in Workspace */
-  #mob-date-nav {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    padding: 10px 0;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-  }
+    /* Workspace Panel (Journal / Notes) */
+    .ws-panel {
+        position: fixed !important;
+        top: 100vh !important;
+        /* Hidden below screen */
+        bottom: auto !important;
+        right: 0px !important;
+        left: 0px !important;
+        width: 100% !important;
+        height: calc(100vh - 70px) !important;
+        min-height: calc(100vh - 70px) !important;
+        border-left: none;
+        border-top: 1px solid var(--border);
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+        z-index: 10010 !important;
+        /* Above scrim */
+        transition: top 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        transform: none !important;
+        pointer-events: auto !important;
+    }
 
-  .mob-datenav-btn {
-    background: var(--surface3);
-    border: none;
-    color: var(--text2);
-    width: 36px;
-    height: 36px;
-    border-radius: 18px;
-    font-size: 1.2rem;
-    font-weight: 300;
-  }
-  .mob-datenav-btn:active {
-    background: var(--accent);
-    color: #fff;
-  }
+    .ws-panel.active {
+        top: 5dvh !important;
+        /* Slide up, leaving 5% margin */
+    }
 
-  .mob-datenav-label {
-    font-size: 1rem;
-    font-weight: 600;
-    min-width: 140px;
-    text-align: center;
-  }
+    /* Mobile Date Nav in Workspace */
+    #mob-date-nav {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        padding: 10px 0;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+    }
 
-  /* Mobile Day Sheet (Action Sheet style) */
-  #mob-day-sheet {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 10000;
-    opacity: 0;
-    transition: opacity 0.25s;
-    backdrop-filter: blur(5px);
-  }
-  #mob-day-sheet.visible {
-    display: block !important;
-    opacity: 1;
-  }
+    .mob-datenav-btn {
+        background: var(--surface3);
+        border: none;
+        color: var(--text2);
+        width: 36px;
+        height: 36px;
+        border-radius: 18px;
+        font-size: 1.2rem;
+        font-weight: 300;
+    }
 
-  #mob-day-sheet-inner {
-    position: absolute;
-    bottom: -100%;
-    left: 0; right: 0;
-    background: var(--surface);
-    border-radius: 24px 24px 0 0;
-    padding: 24px 20px 40px;
-    transition: bottom 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-    box-shadow: 0 -10px 40px rgba(0,0,0,0.6);
-  }
+    .mob-datenav-btn:active {
+        background: var(--accent);
+        color: #fff;
+    }
 
-  #mob-day-sheet.visible #mob-day-sheet-inner {
-    bottom: 0;
-  }
+    .mob-datenav-label {
+        font-size: 1rem;
+        font-weight: 600;
+        min-width: 140px;
+        text-align: center;
+    }
 
-  .mds-date {
-    font-size: 1.3rem;
-    font-family: 'DM Serif Display', serif;
-    margin-bottom: 15px;
-    text-align: center;
-  }
+    /* Mobile Day Sheet (Action Sheet style) */
+    #mob-day-sheet {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.25s;
+        backdrop-filter: blur(5px);
+    }
 
-  .mds-events {
-    max-height: 40vh;
-    overflow-y: auto;
-    margin-bottom: 20px;
-  }
+    #mob-day-sheet.visible {
+        display: block !important;
+        opacity: 1;
+    }
 
-  .mds-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+    #mob-day-sheet-inner {
+        position: absolute;
+        bottom: -100%;
+        left: 0;
+        right: 0;
+        background: var(--surface);
+        border-radius: 24px 24px 0 0;
+        padding: 24px 20px 40px;
+        transition: bottom 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+    }
 
-  .mds-btn {
-    padding: 16px;
-    border-radius: 12px;
-    border: none;
-    font-size: 1.05rem;
-    font-weight: 600;
-    font-family: inherit;
-    cursor: pointer;
-  }
+    #mob-day-sheet.visible #mob-day-sheet-inner {
+        bottom: 0;
+    }
 
-  .mds-btn-event {
-    background: var(--accent);
-    color: #fff;
-  }
+    .mds-date {
+        font-size: 1.3rem;
+        font-family: 'DM Serif Display', serif;
+        margin-bottom: 15px;
+        text-align: center;
+    }
 
-  .mds-btn-journal {
-    background: var(--surface3);
-    color: var(--text);
-  }
+    .mds-events {
+        max-height: 40vh;
+        overflow-y: auto;
+        margin-bottom: 20px;
+    }
 
-  .mds-close {
-    margin-top: 15px;
-    width: 100%;
-    padding: 16px;
-    background: transparent;
-    color: var(--red);
-    border: none;
-    font-size: 1.05rem;
-    font-weight: 600;
-    font-family: inherit;
-    cursor: pointer;
-  }
+    .mds-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
 
-  /* Universal Swipe/Touch tweaks */
-  .calendar-area {
-    touch-action: pan-x pan-y;
-  }
+    .mds-btn {
+        padding: 16px;
+        border-radius: 12px;
+        border: none;
+        font-size: 1.05rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+    }
 
-  .day-cell {
-    min-height: 100px; /* larger tap targets */
-  }
+    .mds-btn-event {
+        background: var(--accent);
+        color: #fff;
+    }
 
-  /* Modals generally */
-  .modal {
-    width: 90% !important;
-    max-width: 400px;
-    border-radius: 20px;
-    margin: 10vh auto;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
+    .mds-btn-journal {
+        background: var(--surface3);
+        color: var(--text);
+    }
 
-  /* Make sure form inputs are accessible easily */
-  .form-input {
-    font-size: 16px; /* Prevents iOS auto-zoom */
-    padding: 12px 14px;
-  }
+    .mds-close {
+        margin-top: 15px;
+        width: 100%;
+        padding: 16px;
+        background: transparent;
+        color: var(--red);
+        border: none;
+        font-size: 1.05rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+    }
 
-  /* Event Popup centering */
-  .event-popup {
-    position: fixed;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) scale(0.9);
-    width: 85% !important;
-    max-width: 320px;
-    border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-    opacity: 0;
-    transition: opacity 0.2s, transform 0.2s;
-    z-index: 10000;
-  }
+    /* Universal Swipe/Touch tweaks */
+    .calendar-area {
+        touch-action: pan-x pan-y;
+    }
 
-  .event-popup.visible {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
+    .day-cell {
+        min-height: 100px;
+        /* larger tap targets */
+    }
 
-  /* Remove absolute positioning for this logic */
-  .event-popup {
-    pointer-events: auto !important;
-  }
+    /* Modals generally */
+    .modal {
+        width: 90% !important;
+        max-width: 400px;
+        border-radius: 20px;
+        margin: 10vh auto;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
 
-  @keyframes slideUpFade {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+    /* Make sure form inputs are accessible easily */
+    .form-input {
+        font-size: 16px;
+        /* Prevents iOS auto-zoom */
+        padding: 12px 14px;
+    }
+
+    /* Event Popup centering */
+    .event-popup {
+        position: fixed;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) scale(0.9);
+        width: 85% !important;
+        max-width: 320px;
+        border-radius: 20px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        opacity: 0;
+        transition: opacity 0.2s, transform 0.2s;
+        z-index: 10000;
+    }
+
+    .event-popup.visible {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* Remove absolute positioning for this logic */
+    .event-popup {
+        pointer-events: auto !important;
+    }
+
+    @keyframes slideUpFade {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 }
