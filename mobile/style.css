@@ -3771,13 +3771,16 @@
         position: fixed;
         inset: 0;
         z-index: 299;
-        background: #00000070;
-        backdrop-filter: blur(2px);
-        -webkit-backdrop-filter: blur(2px);
+        background: rgba(0, 0, 0, 0.45);
+        /* No backdrop-filter — blur causes blurry screen */
+        opacity: 0;
+        transition: opacity 0.25s;
       }
 
-      #mob-scrim.on {
+      #mob-scrim.on,
+      #mob-scrim.visible {
         display: block;
+        opacity: 1;
       }
 
       /* ── WS PANEL — bottom sheet ── */
@@ -3999,8 +4002,7 @@
       /* ── MODALS — bottom sheets ── */
       .overlay {
         align-items: flex-end;
-        z-index: 3000 !important;
-        /* Above scrim(2900), below journal/note(4000) */
+        z-index: 600 !important;
         padding-bottom: var(--bnav-h);
       }
 
@@ -4042,16 +4044,16 @@
       /* Note / Journal editor */
       .note-edit-overlay {
         align-items: flex-end;
-        z-index: 4000 !important;
-        /* above all mobile layers including sidebar(3500) */
+        z-index: 700 !important;
+        /* above overlays(600) */
         padding-bottom: 0;
+        /* editor fills full screen, its own close btn handles nav */
       }
 
       .note-editor-modal {
         width: 100% !important;
         max-width: 100% !important;
-        max-height: 65dvh;
-        /* Bottom-sheet: calendar visible in top 35% */
+        max-height: 96dvh;
         border-radius: 20px 20px 0 0 !important;
         margin: 0;
         padding-bottom: calc(env(safe-area-inset-bottom, 0px));
@@ -4285,29 +4287,7 @@
       .modal {
         -webkit-overflow-scrolling: touch;
       }
-    
-      /* Mobile tap targets — all interactive elements ≥ 44px */
-      .ws-close-btn,
-      .mini-toggle-btn,
-      .mob-datenav-btn {
-        min-width: 44px !important;
-        min-height: 44px !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-      }
-      .ws-close-btn {
-        font-size: 1.2rem !important;
-      }
-      /* mob-date-nav: always visible in ws-panel on mobile */
-      #mob-date-nav {
-        display: flex !important;
-      }
-      /* Settings modal: enough room for firebase section */
-      .settings-modal {
-        max-height: 90dvh !important;
-      }
-}
+    }
 
     @media (max-width:380px) {
       .month-title {

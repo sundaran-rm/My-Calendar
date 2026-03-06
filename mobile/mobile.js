@@ -108,11 +108,11 @@ function mobToggleWs() {
         ws.classList.add('open');
         if (mbnWs) mbnWs.classList.add('active');
         toggleMobScrim(true);
-        // Update date nav label when panel opens
+        // Update date nav label
         const lbl = getEl('mob-datenav-label');
         if (lbl && typeof wsDateCtx !== 'undefined' && wsDateCtx) {
             const parts = wsDateCtx.split('-');
-            const d = new Date(+parts[0], +parts[1]-1, +parts[2]);
+            const d = new Date(+parts[0], +parts[1] - 1, +parts[2]);
             lbl.textContent = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
         }
     } else {
@@ -159,20 +159,17 @@ function mobDayOpenJournal() {
 }
 
 function mobJournalNav(dir) {
-    // wsDateCtx is the variable app.js uses for journal date context
-    if (typeof wsDateCtx !== 'undefined') {
-        // wsDateCtx is a "YYYY-MM-DD" string — parse, shift, reformat
+    if (typeof wsDateCtx !== 'undefined' && wsDateCtx) {
         const parts = wsDateCtx.split('-');
-        const d = new Date(+parts[0], +parts[1]-1, +parts[2]);
+        const d = new Date(+parts[0], +parts[1] - 1, +parts[2]);
         d.setDate(d.getDate() + dir);
-        wsDateCtx = d.toISOString().slice(0,10);
+        const pad = n => String(n).padStart(2, '0');
+        wsDateCtx = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
         if (typeof selectedDay !== 'undefined') selectedDay = wsDateCtx;
         if (typeof saveWsCtx === 'function') saveWsCtx();
         if (typeof renderWsPanel === 'function') renderWsPanel();
         const lbl = getEl('mob-datenav-label');
-        if (lbl) {
-            lbl.textContent = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-        }
+        if (lbl) lbl.textContent = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
     }
 }
 
