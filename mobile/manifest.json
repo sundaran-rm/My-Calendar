@@ -1,23 +1,14 @@
 {
-  "name": "CalIO - Beautiful Mobile Calendar",
+  "name": "CalIO",
   "short_name": "CalIO",
-  "start_url": "./index.html",
+  "description": "Offline-first calendar with journal, notes, todos & Firebase sync",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#18181c",
+  "background_color": "#0f0f11",
   "theme_color": "#18181c",
-  "icons": [
-    {
-      "src": "icons/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ],
-  "description": "Offline-first calendar with journal, notes, todos, and swipe functionalities.",
   "orientation": "portrait-primary",
-  "id": "/"
+  "icons": [
+    { "src": "icons/icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
 }
