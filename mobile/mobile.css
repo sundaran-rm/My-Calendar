@@ -1,126 +1,50 @@
 /* =============================================================
-   MOBILE PWA — ADDITIVE LAYER
-   This file only adds styles that style.css doesn't cover.
-   It never overrides z-index values — style.css owns the stack:
-     scrim:299 → sidebar/ws-panel:300 → event-popup:350 →
-     mob-nav:400 → view-tray:401 → modals:600 → editors:700
+   MOBILE PWA — additive aesthetic layer only.
+   All z-index and layout rules live in style.css @media(768).
+   This file never overrides z-index values.
    ============================================================= */
 
 @media (max-width: 768px) {
 
-    /* ── SCRIM ──────────────────────────────────────────────────
-       style.css uses class '.on' to show the scrim.
-       mobile.js uses class 'visible'.
-       We define BOTH so either works, and we deliberately do NOT
-       set z-index (style.css already sets 299) and do NOT add
-       backdrop-filter (that is what caused the blur).             */
-    #mob-scrim {
-        background: rgba(0, 0, 0, 0.45);
-        /* NO backdrop-filter — that was causing the blurry screen */
-        transition: opacity 0.25s;
-    }
-
-    /* Support both 'on' (style.css JS) and 'visible' (mobile.js) */
-    #mob-scrim.visible {
-        display: block;
-        opacity: 1;
-    }
-
-    /* ── BOTTOM NAV — glassmorphism ─────────────────────────────
-       style.css sets z-index:400. We only add the visual style.   */
-    [data-theme="dark"] #mob-nav {
-        background: rgba(24, 24, 28, 0.92);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-top: 1px solid rgba(255, 255, 255, 0.07);
-        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35);
+    /* Bottom nav glassmorphism */
+    [data-theme="dark"] #mob-nav,
+    :not([data-theme="light"]) #mob-nav {
+        background: rgba(22, 22, 26, 0.92) !important;
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-top: 1px solid rgba(255,255,255,0.07) !important;
+        box-shadow: 0 -4px 24px rgba(0,0,0,0.4) !important;
     }
 
     [data-theme="light"] #mob-nav {
-        background: rgba(255, 255, 255, 0.94);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-top: 1px solid rgba(0, 0, 0, 0.06);
-        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+        background: rgba(255,255,255,0.94) !important;
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-top: 1px solid rgba(0,0,0,0.06) !important;
+        box-shadow: 0 -4px 16px rgba(0,0,0,0.06) !important;
     }
 
-    /* ── WS-PANEL — use the 'active' show class from mobile.js ──
-       style.css handles the 'open' class (translateY).
-       mobile.js adds BOTH 'active' AND 'open'.
-       style.css's ws-panel uses top:auto and translateY(110%) to
-       hide it. mobile.js also adds 'active' class — define that
-       here to be the same as 'open' (translateY(0)).               */
-    .ws-panel.active {
-        transform: translateY(0) !important;
-        pointer-events: all !important;
-    }
-
-    /* ── SIDEBAR — 'mob-open' show class ────────────────────────
-       style.css doesn't define .sidebar.mob-open — it relies on
-       the desktop collapse mechanism. Define it here.              */
-    .sidebar.mob-open {
-        transform: translateX(0) !important;
-    }
-
-    /* ── MOB-DAY-SHEET ──────────────────────────────────────────
-       mobile.js uses class 'visible' to show it.
-       style.css doesn't define this element's show state.         */
-    #mob-day-sheet.visible {
-        display: block !important;
-        opacity: 1;
-    }
-
-    /* ── VIEW TRAY — 'show' class ───────────────────────────────
-       style.css uses '.on', mobile.js uses '.show'.
-       Define both.                                                  */
-    #mob-view-tray.show {
-        display: flex !important;
-    }
-
-    /* ── MVT BUTTON ACTIVE STATE ────────────────────────────────*/
-    .mvt-btn.active {
-        border-color: var(--accent);
-        background: var(--accent-soft);
-        color: var(--accent2);
-    }
-
-    /* ── FAB ─────────────────────────────────────────────────── */
-    .mbn-fab {
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        background: var(--accent);
-        color: #fff;
-        font-size: 1.7rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 18px rgba(124, 106, 247, 0.4);
-        margin-top: -12px;
-        flex-shrink: 0;
-        border: none;
-        cursor: pointer;
-        touch-action: manipulation;
-        transition: transform 0.15s, background 0.15s;
-    }
-
+    /* FAB pop */
     .mbn-fab:active {
-        transform: scale(0.93) !important;
-        background: var(--accent2);
+        transform: scale(0.92) !important;
     }
 
-    /* ── ACTIVE NAV BUTTON ──────────────────────────────────────*/
-    .mbn-btn.active {
-        color: var(--accent);
+    /* Active state for view tray buttons */
+    .mvt-btn.active,
+    .mvt-btn.on {
+        border-color: var(--accent) !important;
+        background: var(--accent-soft) !important;
+        color: var(--accent2) !important;
     }
 
-    /* ── SLIDE-UP ANIMATION for view tray ───────────────────────*/
+    /* Slide-up animation for view tray */
     @keyframes slideUpFade {
-        from { opacity: 0; transform: translateY(12px); }
+        from { opacity: 0; transform: translateY(10px); }
         to   { opacity: 1; transform: translateY(0); }
     }
-    #mob-view-tray.show {
-        animation: slideUpFade 0.18s ease-out forwards;
+    #mob-view-tray.show,
+    #mob-view-tray.on {
+        animation: slideUpFade 0.16s ease-out forwards;
     }
 
 }

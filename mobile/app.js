@@ -1639,7 +1639,6 @@
         else if (Notification.permission === 'denied') ns.textContent = 'Blocked by browser';
         else ns.textContent = 'Click to enable';
       }
-      // Mirror live sync state into mobile settings badge
       const srcDot = document.getElementById('sync-dot');
       const srcLbl = document.getElementById('sync-label');
       const mobDot = document.getElementById('mob-sync-dot');
@@ -2285,7 +2284,7 @@
         body.appendChild(heading);
 
         const dayEntries = journalEntries.filter(e => e.date === wsDateCtx)
-          .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
         if (dayEntries.length) {
           const newestId = dayEntries[dayEntries.length - 1].id;
           dayEntries.forEach((entry) => {
@@ -2324,7 +2323,13 @@
         const lbl = document.createElement('div');
         lbl.style.cssText = 'font-size:0.65rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin:8px 0 5px;padding:0 2px';
         lbl.textContent = MONTHS[m - 1] + ' ' + y; body.appendChild(lbl);
-        byMonth[mo].forEach(entry => body.appendChild(buildJournalCard(entry, todayStr, false)));
+        byMonth[mo]
+          .slice()
+          .sort((a, b) => {
+            if (b.date !== a.date) return b.date.localeCompare(a.date);
+            return (b.createdAt || 0) - (a.createdAt || 0);
+          })
+          .forEach(entry => body.appendChild(buildJournalCard(entry, todayStr, false)));
       });
 
       if (!hasToday) {

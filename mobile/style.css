@@ -3771,8 +3771,8 @@
         position: fixed;
         inset: 0;
         z-index: 299;
-        background: rgba(0, 0, 0, 0.45);
-        /* No backdrop-filter — blur causes blurry screen */
+        background: rgba(0,0,0,0.45);
+        /* No backdrop-filter — blur was causing blurry screen */
         opacity: 0;
         transition: opacity 0.25s;
       }
@@ -4287,7 +4287,56 @@
       .modal {
         -webkit-overflow-scrolling: touch;
       }
-    }
+    
+      /* BUG 4: hide ws-panel close button on mobile (panel closes via scrim tap) */
+      .ws-close-btn {
+        display: none !important;
+      }
+
+      /* BUG 2: settings modal scroll — mirror event modal behaviour exactly */
+      #settings-overlay {
+        align-items: flex-end !important;
+        padding-bottom: var(--bnav-h) !important;
+      }
+      #settings-overlay .modal {
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior: contain !important;
+        max-height: 88dvh !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 16px 16px 0 0 !important;
+      }
+      #settings-overlay .modal-actions {
+        position: sticky !important;
+        bottom: 0 !important;
+        background: var(--surface) !important;
+        padding: 12px 0 4px !important;
+        margin-top: 12px !important;
+        border-top: 1px solid var(--border) !important;
+        z-index: 1;
+      }
+
+      /* ws-panel.active — mirror the 'open' translateY show state */
+      .ws-panel.active {
+        transform: translateY(0) !important;
+        pointer-events: all !important;
+      }
+
+      /* sidebar.mob-open — translateX into view */
+      .sidebar.mob-open {
+        transform: translateX(0) !important;
+      }
+
+      /* mob-day-sheet.visible + mob-view-tray.show (mobile.js uses these) */
+      #mob-day-sheet.visible {
+        display: block !important;
+        opacity: 1 !important;
+      }
+      #mob-view-tray.show {
+        display: flex !important;
+      }
+}
 
     @media (max-width:380px) {
       .month-title {
