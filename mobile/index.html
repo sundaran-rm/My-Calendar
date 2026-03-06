@@ -4308,7 +4308,7 @@
         <button class="ws-tab" id="ws-tab-todos" onclick="switchWsTab('todos')">✅ Todos</button>
       </div>
       <!-- Mobile journal date nav — hidden on desktop via CSS -->
-      <div class="mob-date-nav" id="mob-date-nav" style="display:none">
+      <div class="mob-date-nav" id="mob-date-nav">
         <button class="mob-datenav-btn" onclick="mobJournalNav(-1)" title="Previous day">‹</button>
         <span class="mob-datenav-label" id="mob-datenav-label"></span>
         <button class="mob-datenav-btn" onclick="mobJournalNav(1)" title="Next day">›</button>
@@ -8529,12 +8529,6 @@
   /* ── DOMContentLoaded setup ── */
   document.addEventListener('DOMContentLoaded', function () {
 
-    // Show mobile-only elements, hide desktop-only
-    ['mob-nav', 'mob-scrim', 'mob-view-tray', 'mob-day-sheet', 'mob-date-nav'].forEach(id => {
-      const el = g(id);
-      if (el) el.style.removeProperty('display');
-    });
-
     // Scrim click closes everything
     const scrim = g('mob-scrim');
     if (scrim) {
@@ -8591,20 +8585,9 @@
         navigator.serviceWorker.register('./sw.js').catch(function () {});
       });
     }
-    // Show/hide mobile vs desktop UI
-    (function() {
-      var MOB = ['mob-nav','mob-scrim','mob-view-tray','mob-day-sheet','mob-date-nav'];
-      function apply() {
-        var m = window.innerWidth <= 768;
-        MOB.forEach(function(id) {
-          var el = document.getElementById(id);
-          if (!el) return;
-          el.style.display = m ? '' : 'none';
-        });
-      }
-      document.addEventListener('DOMContentLoaded', apply);
-      window.addEventListener('resize', apply);
-    })();
+    // mob-nav: CSS already hides it on desktop (display:none).
+    // On mobile the @media rule shows it (display:flex).
+    // No JS visibility management needed — CSS handles it cleanly.
   </script>
 </body>
 </html>
