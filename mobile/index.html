@@ -242,7 +242,7 @@
 
   <!-- ── JOURNAL EDITOR OVERLAY ── -->
   <div class="note-edit-overlay" id="journal-overlay" style="display:none" onclick="handleJournalOverlayClick(event)">
-    <div class="note-editor-modal" style="max-height:88vh">
+    <div class="note-editor-modal">
       <div class="note-editor-header" style="flex-direction:column;align-items:stretch;gap:6px;padding:12px 16px 8px">
         <div style="display:flex;align-items:center;gap:8px">
           <input class="note-title-input" id="je-ov-title" placeholder="Entry title (optional)…" />
@@ -565,38 +565,27 @@
         </div>
       </div>
 
-      <!-- ── SYNC & FIREBASE (mobile only) ── -->
+      <!-- ── Sync & Firebase (mobile) ── -->
       <div class="settings-section">
         <div class="settings-section-title">Sync &amp; Firebase</div>
-
-        <!-- Live sync status badge -->
-        <div class="setting-row" style="margin-bottom:12px">
+        <div class="setting-row" style="margin-bottom:14px">
           <div>
-            <div class="setting-label">Sync Status</div>
-            <div class="setting-sub" id="mob-sync-label">Local</div>
+            <div class="setting-label">Connection</div>
+            <div class="setting-sub" id="mob-sync-label">Local only</div>
           </div>
-          <div id="mob-sync-dot" class="sync-dot local"
-               style="width:10px;height:10px;border-radius:50%;flex-shrink:0"></div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div id="mob-sync-dot" class="sync-dot local" style="width:10px;height:10px;border-radius:50%;flex-shrink:0"></div>
+          </div>
         </div>
-
-        <!-- Firebase setup -->
-        <div class="setting-row" style="margin-bottom:10px">
-          <div>
-            <div class="setting-label">Firebase Setup</div>
-            <div class="setting-sub">Connect for cross-device sync</div>
-          </div>
-          <button class="btn-save" style="padding:6px 14px;font-size:0.78rem;flex-shrink:0"
-            onclick="closeSettings();document.getElementById('mbn-more').classList.remove('on');openFbSetup()">Setup</button>
-        </div>
-
-        <!-- Sync room -->
-        <div class="setting-row">
-          <div>
-            <div class="setting-label">Sync Room</div>
-            <div class="setting-sub">Create or join a collaboration room</div>
-          </div>
-          <button class="btn-save" style="padding:6px 14px;font-size:0.78rem;flex-shrink:0"
-            onclick="closeSettings();document.getElementById('mbn-more').classList.remove('on');openRoomModal()">Room</button>
+        <div style="display:flex;gap:8px;flex-direction:column">
+          <button class="btn-save" style="width:100%;padding:12px;font-size:0.9rem;"
+            onclick="closeSettings();document.getElementById('mbn-more').classList.remove('on');setTimeout(openFbSetup,80)">
+            🔥 Firebase Setup
+          </button>
+          <button class="btn-cancel" style="width:100%;padding:12px;font-size:0.9rem;"
+            onclick="closeSettings();document.getElementById('mbn-more').classList.remove('on');setTimeout(openRoomModal,80)">
+            ⚡ Sync Room
+          </button>
         </div>
       </div>
 

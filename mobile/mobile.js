@@ -105,9 +105,16 @@ function mobToggleWs() {
 
     if (isWsOpen) {
         ws.classList.add('active');
-        ws.classList.add('open'); // Consistency with desktop
+        ws.classList.add('open');
         if (mbnWs) mbnWs.classList.add('active');
         toggleMobScrim(true);
+        // Update date nav label when panel opens
+        const lbl = getEl('mob-datenav-label');
+        if (lbl && typeof wsDateCtx !== 'undefined' && wsDateCtx) {
+            const parts = wsDateCtx.split('-');
+            const d = new Date(+parts[0], +parts[1]-1, +parts[2]);
+            lbl.textContent = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        }
     } else {
         ws.classList.remove('active');
         ws.classList.remove('open');
@@ -152,17 +159,19 @@ function mobDayOpenJournal() {
 }
 
 function mobJournalNav(dir) {
-    // If there's a global current journal date, shift it and re-render
-    // This depends on how app.js manages the journal date, it usually uses currentWsDate
-    if (typeof currentWsDate !== 'undefined') {
-        currentWsDate.setDate(currentWsDate.getDate() + dir);
-        if (typeof renderJournal === 'function') {
-            renderJournal();
-            // Update label
-            const lbl = getEl('mob-datenav-label');
-            if (lbl) {
-                lbl.textContent = currentWsDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-            }
+    // wsDateCtx is the variable app.js uses for journal date context
+    if (typeof wsDateCtx !== 'undefined') {
+        // wsDateCtx is a "YYYY-MM-DD" string — parse, shift, reformat
+        const parts = wsDateCtx.split('-');
+        const d = new Date(+parts[0], +parts[1]-1, +parts[2]);
+        d.setDate(d.getDate() + dir);
+        wsDateCtx = d.toISOString().slice(0,10);
+        if (typeof selectedDay !== 'undefined') selectedDay = wsDateCtx;
+        if (typeof saveWsCtx === 'function') saveWsCtx();
+        if (typeof renderWsPanel === 'function') renderWsPanel();
+        const lbl = getEl('mob-datenav-label');
+        if (lbl) {
+            lbl.textContent = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
         }
     }
 }
