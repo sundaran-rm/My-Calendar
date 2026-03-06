@@ -4041,21 +4041,21 @@
       /* Note / Journal editor */
       .note-edit-overlay {
         align-items: flex-end;
-        z-index: 700 !important;
-        /* above overlays(600) */
+        /* z-index must exceed ws-panel(10010) so the ✕ button
+           is always tappable even when journal opens from WS panel */
+        z-index: 10020 !important;
         padding-bottom: 0;
-        /* editor fills full screen, its own close btn handles nav */
       }
 
       .note-editor-modal {
         width: 100% !important;
         max-width: 100% !important;
-        max-height: 96dvh;
+        /* 65dvh: editor is a bottom-sheet, top ~35% shows calendar */
+        max-height: 65dvh;
         border-radius: 20px 20px 0 0 !important;
         margin: 0;
         padding-bottom: calc(env(safe-area-inset-bottom, 0px));
         overflow: hidden;
-        /* C3: parent clips, children scroll */
       }
 
       /* Journal/Note body scrolls, footer stays sticky */

@@ -1639,6 +1639,13 @@
         else if (Notification.permission === 'denied') ns.textContent = 'Blocked by browser';
         else ns.textContent = 'Click to enable';
       }
+      // Mirror live sync state into the mobile settings badge
+      const mainDot = document.getElementById('sync-dot');
+      const mainLbl = document.getElementById('sync-label');
+      const mobDot  = document.getElementById('mob-sync-dot');
+      const mobLbl  = document.getElementById('mob-sync-label');
+      if (mainDot && mobDot) mobDot.className = mainDot.className;
+      if (mainLbl && mobLbl) mobLbl.textContent = mainLbl.textContent;
       document.getElementById('settings-overlay').classList.add('open');
     }
     function closeSettings() { document.getElementById('settings-overlay').classList.remove('open'); }

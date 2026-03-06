@@ -565,6 +565,41 @@
         </div>
       </div>
 
+      <!-- ── SYNC & FIREBASE (mobile only) ── -->
+      <div class="settings-section">
+        <div class="settings-section-title">Sync &amp; Firebase</div>
+
+        <!-- Live sync status badge -->
+        <div class="setting-row" style="margin-bottom:12px">
+          <div>
+            <div class="setting-label">Sync Status</div>
+            <div class="setting-sub" id="mob-sync-label">Local</div>
+          </div>
+          <div id="mob-sync-dot" class="sync-dot local"
+               style="width:10px;height:10px;border-radius:50%;flex-shrink:0"></div>
+        </div>
+
+        <!-- Firebase setup -->
+        <div class="setting-row" style="margin-bottom:10px">
+          <div>
+            <div class="setting-label">Firebase Setup</div>
+            <div class="setting-sub">Connect for cross-device sync</div>
+          </div>
+          <button class="btn-save" style="padding:6px 14px;font-size:0.78rem;flex-shrink:0"
+            onclick="closeSettings();document.getElementById('mbn-more').classList.remove('on');openFbSetup()">Setup</button>
+        </div>
+
+        <!-- Sync room -->
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Sync Room</div>
+            <div class="setting-sub">Create or join a collaboration room</div>
+          </div>
+          <button class="btn-save" style="padding:6px 14px;font-size:0.78rem;flex-shrink:0"
+            onclick="closeSettings();document.getElementById('mbn-more').classList.remove('on');openRoomModal()">Room</button>
+        </div>
+      </div>
+
       <!-- Mobile Close Button for Settings -->
       <div class="modal-actions" style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
         <button class="btn-save" id="settings-done-btn" style="width: 100%;"
